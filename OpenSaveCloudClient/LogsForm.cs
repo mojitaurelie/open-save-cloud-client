@@ -33,18 +33,9 @@ namespace OpenSaveCloudClient
         {
             this.Invoke((MethodInvoker)delegate
             {
-                UpdateList();
+                ListViewItem lvi = listView1.Items.Add(e.Message);
+                lvi.SubItems.Add(e.Severity.ToString());
             });
-        }
-
-        private void UpdateList()
-        {
-            listView1.Items.Clear();
-            foreach (Log l in logManager.Messages)
-            {
-                ListViewItem lvi = listView1.Items.Add(l.Message);
-                lvi.SubItems.Add(l.Severity.ToString());
-            }
         }
 
         private void LogForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -54,7 +45,11 @@ namespace OpenSaveCloudClient
 
         private void LogsForm_Load(object sender, EventArgs e)
         {
-            UpdateList();
+            foreach (Log l in logManager.Messages)
+            {
+                ListViewItem lvi = listView1.Items.Add(l.Message);
+                lvi.SubItems.Add(l.Severity.ToString());
+            }
         }
     }
 }

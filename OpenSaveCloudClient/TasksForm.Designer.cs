@@ -33,7 +33,6 @@
             this.Task = new System.Windows.Forms.ColumnHeader();
             this.Status = new System.Windows.Forms.ColumnHeader();
             this.Progress = new System.Windows.Forms.ColumnHeader();
-            this.uuid = new System.Windows.Forms.ColumnHeader();
             this.SuspendLayout();
             // 
             // listView1
@@ -41,8 +40,7 @@
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Task,
             this.Status,
-            this.Progress,
-            this.uuid});
+            this.Progress});
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.MultiSelect = false;
@@ -67,11 +65,6 @@
             this.Progress.Text = "Progress";
             this.Progress.Width = 200;
             // 
-            // uuid
-            // 
-            this.uuid.Text = "UUID";
-            this.uuid.Width = 0;
-            // 
             // TasksForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
@@ -93,7 +86,6 @@
         private ListView listView1;
         private ColumnHeader Task;
         private ColumnHeader Progress;
-        private ColumnHeader uuid;
         private ColumnHeader Status;
     }
 }

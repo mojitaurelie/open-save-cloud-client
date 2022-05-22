@@ -100,6 +100,7 @@
             // AddButton
             // 
             this.AddButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.AddButton.Enabled = false;
             this.AddButton.Image = ((System.Drawing.Image)(resources.GetObject("AddButton.Image")));
             this.AddButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.AddButton.Name = "AddButton";
@@ -110,6 +111,7 @@
             // SyncButton
             // 
             this.SyncButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.SyncButton.Enabled = false;
             this.SyncButton.Image = ((System.Drawing.Image)(resources.GetObject("SyncButton.Image")));
             this.SyncButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.SyncButton.Name = "SyncButton";
@@ -140,6 +142,7 @@
             // LogoutButton
             // 
             this.LogoutButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.LogoutButton.Enabled = false;
             this.LogoutButton.Image = ((System.Drawing.Image)(resources.GetObject("LogoutButton.Image")));
             this.LogoutButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.LogoutButton.Name = "LogoutButton";
@@ -160,6 +163,7 @@
             // AboutButton
             // 
             this.AboutButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.AboutButton.Enabled = false;
             this.AboutButton.Image = ((System.Drawing.Image)(resources.GetObject("AboutButton.Image")));
             this.AboutButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.AboutButton.Name = "AboutButton";

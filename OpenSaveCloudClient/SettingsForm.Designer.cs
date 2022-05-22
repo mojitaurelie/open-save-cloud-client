@@ -40,7 +40,11 @@
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.label2 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.AtCreationCheckBox = new System.Windows.Forms.CheckBox();
+            this.AtLoginCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -108,6 +112,7 @@
             // IgdbCheckBox
             // 
             this.IgdbCheckBox.AutoSize = true;
+            this.IgdbCheckBox.Enabled = false;
             this.IgdbCheckBox.Location = new System.Drawing.Point(6, 293);
             this.IgdbCheckBox.Name = "IgdbCheckBox";
             this.IgdbCheckBox.Size = new System.Drawing.Size(135, 29);
@@ -146,7 +151,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(383, 582);
+            this.button1.Location = new System.Drawing.Point(383, 767);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(112, 34);
             this.button1.TabIndex = 2;
@@ -154,27 +159,64 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // Settings
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.AtCreationCheckBox);
+            this.groupBox2.Controls.Add(this.AtLoginCheckBox);
+            this.groupBox2.Location = new System.Drawing.Point(12, 564);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(483, 122);
+            this.groupBox2.TabIndex = 3;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Auto synchronization";
+            // 
+            // AtCreationCheckBox
+            // 
+            this.AtCreationCheckBox.AutoSize = true;
+            this.AtCreationCheckBox.Checked = true;
+            this.AtCreationCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.AtCreationCheckBox.Location = new System.Drawing.Point(6, 80);
+            this.AtCreationCheckBox.Name = "AtCreationCheckBox";
+            this.AtCreationCheckBox.Size = new System.Drawing.Size(254, 29);
+            this.AtCreationCheckBox.TabIndex = 1;
+            this.AtCreationCheckBox.Text = "After creating a game entry";
+            this.AtCreationCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // AtLoginCheckBox
+            // 
+            this.AtLoginCheckBox.AutoSize = true;
+            this.AtLoginCheckBox.Checked = true;
+            this.AtLoginCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.AtLoginCheckBox.Location = new System.Drawing.Point(6, 45);
+            this.AtLoginCheckBox.Name = "AtLoginCheckBox";
+            this.AtLoginCheckBox.Size = new System.Drawing.Size(122, 29);
+            this.AtLoginCheckBox.TabIndex = 0;
+            this.AtLoginCheckBox.Text = "After login";
+            this.AtLoginCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(507, 628);
+            this.ClientSize = new System.Drawing.Size(507, 813);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(529, 684);
             this.MinimumSize = new System.Drawing.Size(529, 684);
-            this.Name = "Settings";
+            this.Name = "SettingsForm";
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Settings";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -193,5 +235,8 @@
         private Label label3;
         private LinkLabel linkLabel1;
         private Button button1;
+        private GroupBox groupBox2;
+        private CheckBox AtCreationCheckBox;
+        private CheckBox AtLoginCheckBox;
     }
 }

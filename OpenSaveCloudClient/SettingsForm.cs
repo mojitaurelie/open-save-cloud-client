@@ -25,9 +25,11 @@ namespace OpenSaveCloudClient
 
         private void InitAndFillFields()
         {
-            IgdbCheckBox.Checked = _configuration.GetBoolean("igdb.enabled", false);
+            IgdbCheckBox.Checked = false; //_configuration.GetBoolean("igdb.enabled", false);
             IgdbClientID.Text = _configuration.GetString("igdb.client_id", "");
             IgdbClientSecret.Text = _configuration.GetString("igdb.client_secret", "");
+            AtLoginCheckBox.Checked = _configuration.GetBoolean("synchronization.at_login", true);
+            AtCreationCheckBox.Checked = _configuration.GetBoolean("synchronization.at_game_creation", true);
         }
 
         private void IgdbCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -41,6 +43,8 @@ namespace OpenSaveCloudClient
             _configuration.SetValue("igdb.enabled", IgdbCheckBox.Checked);
             _configuration.SetValue("igdb.client_id", IgdbClientID.Text);
             _configuration.SetValue("igdb.client_secret", IgdbClientSecret.Text);
+            _configuration.SetValue("synchronization.at_login", AtLoginCheckBox.Checked);
+            _configuration.SetValue("synchronization.at_game_creation", AtCreationCheckBox.Checked);
             _configuration.Flush();
         }
 

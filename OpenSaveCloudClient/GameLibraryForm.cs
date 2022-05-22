@@ -21,20 +21,22 @@ namespace OpenSaveCloudClient
             InitializeComponent();
             saveManager = SaveManager.GetInstance();
             taskManager = TaskManager.GetInstance();
-            taskManager.TaskChanged += taskManager_TaskChanged;
             serverConnector = ServerConnector.GetInstance();
             _configuration = Configuration.GetInstance();
             logManager = LogManager.GetInstance();
-            if (_configuration.GetBoolean("igdb.enabled", false))
+            /*if (_configuration.GetBoolean("igdb.enabled", false))
             {
                 string clientId = _configuration.GetString("igdb.client_id", "");
                 string clientSecret = _configuration.GetString("igdb.client_secret", "");
                 _client = new IGDBClient(clientId, clientSecret);
-            }
+            }*/
         }
 
         private void GameLibrary_Load(object sender, EventArgs e)
         {
+            taskManager.TaskChanged += taskManager_TaskChanged;
+            logManager.Cleared += LogManager_LogCleared;
+            logManager.NewMessage += LogManager_NewMessage;
             new Thread(() =>
             {
                 serverConnector.Reconnect();
@@ -44,8 +46,22 @@ namespace OpenSaveCloudClient
                         ShowLoginForm();
                     });
                 }
+                else
+                {
+                    this.Invoke((MethodInvoker)delegate {
+                        AddButton.Enabled = true;
+                        LogoutButton.Enabled = true;
+                        AboutButton.Enabled = true;
+                        if (_configuration.GetBoolean("synchronization.at_login", true))
+                        {
+                            SyncButton_Click(sender, e);
+                        } else
+                        {
+                            SyncButton.Enabled = true;
+                        }
+                    });
+                }
             }).Start();
-            
             RefreshList();
         }
 
@@ -65,6 +81,17 @@ namespace OpenSaveCloudClient
             } else
             {
                 Enabled = true;
+                AddButton.Enabled = true;
+                LogoutButton.Enabled = true;
+                AboutButton.Enabled = true;
+                if (_configuration.GetBoolean("synchronization.at_login", true))
+                {
+                    SyncButton_Click(sender, e);
+                }
+                else
+                {
+                    SyncButton.Enabled = true;
+                }
             }
         }
 
@@ -93,6 +120,10 @@ namespace OpenSaveCloudClient
                     SetTaskEnded(taskUuid);
                     this.Invoke((MethodInvoker)delegate {
                         RefreshList();
+                        if (_configuration.GetBoolean("synchronization.at_game_creation", true))
+                        {
+                            SyncButton_Click(null, null);
+                        }
                     });
                 } else
                 {
@@ -170,12 +201,26 @@ namespace OpenSaveCloudClient
                     text = String.Format("Ended: {0}", e.TaskInformation.Label);
                     break;
             }
-            toolStripStatusLabel1.Text = text;
+            if (taskManager.TasksInformation.Count > 1)
+            {
+                this.Invoke((MethodInvoker)delegate {
+                    toolStripStatusLabel1.Text = String.Format("{0} (and {1} more)", text, taskManager.TasksInformation.Count);
+                });
+            }
+            else
+            {
+                this.Invoke((MethodInvoker)delegate {
+                    toolStripStatusLabel1.Text = text;
+                });
+            }
         }
 
         private void LogoutButton_Click(object sender, EventArgs e)
         {
             serverConnector.Logout();
+            AddButton.Enabled = false;
+            LogoutButton.Enabled = false;
+            AboutButton.Enabled = false;
             ShowLoginForm();
         }
 
@@ -191,6 +236,40 @@ namespace OpenSaveCloudClient
             form.Show();
         }
 
+        private void LogManager_NewMessage(object? sender, NewMessageEventArgs e)
+        {
+            int errors = logManager.Messages.Count(m => m.Severity == LogSeverity.Error);
+            int warnings = logManager.Messages.Count(m => m.Severity == LogSeverity.Warning);
+            string label = "";
+            if (errors > 0)
+            {
+                label = String.Format("({0} errors)", errors);
+            }
+            if (warnings > 0)
+            {
+                if (errors > 0)
+                {
+                    label += " ";
+                }
+                label = String.Format("({0} warnings)", warnings);
+            }
+            if (errors > 0 || warnings > 0)
+            {
+                this.Invoke((MethodInvoker)delegate {
+                    ErrorLogButton.Text = label;
+                    ErrorLogButton.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
+                });
+            }
+        }
+
+        private void LogManager_LogCleared(object? sender, ClearEventArgs e)
+        {
+            this.Invoke((MethodInvoker)delegate {
+                ErrorLogButton.Text = "Show logs";
+                ErrorLogButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            });
+        }
+
         private void toolStripDropDownButton1_Click(object sender, EventArgs e)
         {
             TasksForm form = new();
@@ -199,7 +278,13 @@ namespace OpenSaveCloudClient
 
         private void SyncButton_Click(object sender, EventArgs e)
         {
-            new Thread(() => serverConnector.Synchronize()).Start();
+            SyncButton.Enabled = false;
+            new Thread(() => { 
+                serverConnector.Synchronize();
+                this.Invoke((MethodInvoker)delegate {
+                    SyncButton.Enabled = true;
+                });
+            }).Start();
         }
     }
 }

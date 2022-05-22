@@ -16,7 +16,7 @@ namespace OpenSaveCloudClient.Models.Remote
         [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        [JsonPropertyName("revision")]
+        [JsonPropertyName("rev")]
         public int Revision { get; set; }
 
         [JsonPropertyName("hash")]

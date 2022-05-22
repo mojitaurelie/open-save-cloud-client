@@ -19,7 +19,7 @@ namespace OpenSaveCloudClient.Models
         private readonly string description;
         private string hash;
         private readonly string? coverPath;
-        private readonly int revision;
+        private int revision;
         private bool synced;
         private bool localOnly;
 
@@ -30,7 +30,7 @@ namespace OpenSaveCloudClient.Models
         public string FolderPath { get { return folderPath; } }
         public string Hash { get { return hash; } }
         public string? CoverPath { get { return coverPath; } }   
-        public int Revision { get { return revision; } }
+        public int Revision { get { return revision; } set { revision = value; } }
         public bool Synced { get { return synced; } set { synced = value; } }
         public bool LocalOnly { get { return localOnly; } set { localOnly = value; } }
 
@@ -76,10 +76,14 @@ namespace OpenSaveCloudClient.Models
             {
                 Directory.CreateDirectory(cachePath);
             }
-            ZipFile.CreateFromDirectory(folderPath, archivePath, CompressionLevel.SmallestSize, true);
+            if (File.Exists(archivePath))
+            {
+                File.Delete(archivePath);
+            }
+            ZipFile.CreateFromDirectory(folderPath, archivePath, CompressionLevel.SmallestSize, false);
             using (var md5 = MD5.Create())
             {
-                using (var stream = File.OpenRead(archivePath))
+                using (FileStream stream = File.OpenRead(archivePath))
                 {
                     var h = md5.ComputeHash(stream);
                     hash = BitConverter.ToString(h).Replace("-", "").ToLowerInvariant();

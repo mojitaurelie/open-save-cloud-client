@@ -38,6 +38,21 @@ namespace OpenSaveCloudClient.Core
             return gameSave;
         }
 
+        /*public GameSave? GetByUuid(string uuid)
+        {
+            return saves.FirstOrDefault(g => g.Uuid == uuid);
+        }
+
+        public void Set(GameSave gameSave)
+        {
+            GameSave? g = saves.FirstOrDefault(g => g.Uuid == gameSave.Uuid);
+            if (g != null)
+            {
+                saves.Remove(g);
+            }
+            saves.Add(gameSave);
+        }*/
+
         private void Load()
         {
             string appdata = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "osc");

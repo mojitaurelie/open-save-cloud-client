@@ -7,6 +7,7 @@ using System.Text.Json;
 using OpenSaveCloudClient.Models.Remote;
 using OpenSaveCloudClient.Models;
 using System.Net.Http.Headers;
+using System.IO.Compression;
 
 namespace OpenSaveCloudClient.Core
 {
@@ -189,55 +190,46 @@ namespace OpenSaveCloudClient.Core
             return null;
         }
 
-        public void Synchronize()
+        public async void Synchronize()
         {
             string appdata = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "osc");
             string cachePath = Path.Combine(appdata, "cache");
             logManager.AddInformation("Starting synchronization");
             List<GameSave> games = saveManager.Saves;
             string uuidTask = taskManager.StartTask("Synchronizing games", true, games.Count);
+            List<GameSave> toUpload = new();
+            List<GameSave> toDownload = new();
             foreach (GameSave game in games)
             {
                 try
                 {
+                    game.Archive();
                     Game? g = GetGameInfoByID(game.Id);
                     if (g != null)
                     {
                         if (g.Available)
                         {
-                            if (g.Hash != game.Hash)
+                            if (g.Revision > game.Revision)
                             {
-                                if (g.Revision != game.Revision)
-                                {
-                                    logManager.AddInformation(String.Format("'{0}' was updated from another computer", game.Name));
-                                } else
-                                {
-                                    logManager.AddInformation(String.Format("'{0} need to be updated'", game.Name));
-                                    GameUploadToken? gut = LockGameToUpload(game.Id);
-                                    if (gut != null)
-                                    {
-                                        string archivePath = Path.Combine(cachePath, game.Uuid + ".bin");
-                                        UploadSave(gut.UploadToken, archivePath);
-                                    }
-                                }
-                            } 
+                                toDownload.Add(game);
+                            }
+                            else if (g.Revision < game.Revision)
+                            {
+                                logManager.AddWarning(String.Format("Revision are the same, maybe uploaded by another computer ({0})", game.Name));
+                                logManager.AddInformation("To resolve this conflict, force download or force upload from the game detail screen");
+                            }
                             else
                             {
-                                logManager.AddInformation(String.Format("'{0}' is up to date", game.Name));
+                                toUpload.Add(game);
                             }
                         } else
                         {
                             logManager.AddInformation(String.Format("First upload of '{0}'", game.Name));
-                            GameUploadToken? gut = LockGameToUpload(game.Id);
-                            if (gut != null)
-                            {
-                                string archivePath = Path.Combine(cachePath, game.Uuid + ".bin");
-                                UploadSave(gut.UploadToken, archivePath);
-                            }
+                            toUpload.Add(game);
                         }
                     } else
                     {
-                        logManager.AddError(new Exception("Failed to get game information, the save will not be synchronized"));
+                        logManager.AddWarning(String.Format("'{0}' is not found on this server, force upload it from the game detail screen", game.Name));
                     }
                 } catch (Exception ex)
                 {
@@ -245,6 +237,29 @@ namespace OpenSaveCloudClient.Core
                 }
                 taskManager.UpdateTaskProgress(uuidTask, 1);
             }
+            foreach (GameSave game in toUpload)
+            {
+                GameUploadToken? gut = LockGameToUpload(game.Id);
+                if (gut != null)
+                {
+                    string archivePath = Path.Combine(cachePath, game.Uuid + ".bin");
+                    UploadSave(gut.UploadToken, archivePath);
+                    UpdateCache(game.Id, game);
+                }
+            }
+            foreach (GameSave game in toDownload)
+            {
+                GameUploadToken? gut = LockGameToUpload(game.Id);
+                if (gut != null)
+                {
+                    string archivePath = Path.Combine(cachePath, game.Uuid + ".bin");
+                    if (await DownloadSaveAsync(gut.UploadToken, archivePath, game.FolderPath))
+                    {
+                        UpdateCache(game.Id, game);
+                    }
+                }
+            }
+            saveManager.Save();
             taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
         }
 
@@ -256,7 +271,7 @@ namespace OpenSaveCloudClient.Core
             {
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                HttpResponseMessage response = client.GetAsync(string.Format("{0}:{1}/api/v1/game/{2}", host, port, gameId)).Result;
+                HttpResponseMessage response = client.GetAsync(string.Format("{0}:{1}/api/v1/game/info/{2}", host, port, gameId)).Result;
                 if (response.IsSuccessStatusCode)
                 {
                     string responseText = response.Content.ReadAsStringAsync().Result;
@@ -281,16 +296,17 @@ namespace OpenSaveCloudClient.Core
         {
             logManager.AddInformation("Uploading save");
             string uuidTask = taskManager.StartTask("Uploading", true, 1);
+            FileStream stream = File.OpenRead(filePath);
             try
             {
                 MultipartFormDataContent multipartFormContent = new();
-                var fileStreamContent = new StreamContent(File.OpenRead(filePath));
+                var fileStreamContent = new StreamContent(stream);
                 fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
                 multipartFormContent.Add(fileStreamContent, name: "file", fileName: "file.bin");
 
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                client.DefaultRequestHeaders.Add("X-UPLOAD-KEY", uploadToken);
+                client.DefaultRequestHeaders.Add("X-Upload-Key", uploadToken);
                 HttpResponseMessage response = client.PostAsync(string.Format("{0}:{1}/api/v1/game/upload", host, port), multipartFormContent).Result;
                 if (response.IsSuccessStatusCode)
                 {
@@ -306,6 +322,65 @@ namespace OpenSaveCloudClient.Core
             catch (Exception ex)
             {
                 logManager.AddError(ex);
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+            } finally
+            {
+                stream.Close();
+            }
+        }
+
+        public async Task<bool> DownloadSaveAsync(string uploadToken, string filePath, string unzipPath)
+        {
+            logManager.AddInformation("Downloading save");
+            string uuidTask = taskManager.StartTask("Downloading", true, 1);
+            try
+            {
+                HttpClient client = new HttpClient();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                client.DefaultRequestHeaders.Add("X-Upload-Key", uploadToken);
+                HttpResponseMessage response = client.GetAsync(string.Format("{0}:{1}/api/v1/game/download", host, port)).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    using (var fs = new FileStream(filePath, FileMode.Create))
+                    {
+                        await response.Content.CopyToAsync(fs);
+                    }
+                    if (Directory.Exists(unzipPath))
+                    {
+                        Directory.Delete(unzipPath, true);
+                    }
+                    ZipFile.ExtractToDirectory(filePath, unzipPath);
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+                    return true;
+                }
+                else
+                {
+                    logManager.AddError(new Exception(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString())));
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+                }
+            }
+            catch (Exception ex)
+            {
+                logManager.AddError(ex);
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+            }
+            return false;
+        }
+
+        private void UpdateCache(int gameId, GameSave gameSave)
+        {
+            string uuidTask = taskManager.StartTask("Updating cache", true, 1);
+            Game? game = GetGameInfoByID(gameId);
+            if (game != null)
+            {
+                gameSave.Revision = game.Revision;
+                gameSave.LocalOnly = false;
+                gameSave.Synced = true;
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+            }
+            else
+            {
+                logManager.AddError(new Exception("Failed to get game information"));
                 taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
         }
@@ -375,6 +450,7 @@ namespace OpenSaveCloudClient.Core
         private void GetServerInformation()
         {
             logManager.AddInformation("Getting server information");
+            string uuidTask = taskManager.StartTask("Getting server information", true, 1);
             try
             {
                 HttpClient client = new();
@@ -387,6 +463,8 @@ namespace OpenSaveCloudClient.Core
                     {
                         logManager.AddInformation("Server is connected");
                         bind = true;
+                        taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+                        return;
                     }
                 }
             }
@@ -394,6 +472,7 @@ namespace OpenSaveCloudClient.Core
             {
                 logManager.AddError(ex);
             }
+            taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
         }
 
         private void SaveToConfig()

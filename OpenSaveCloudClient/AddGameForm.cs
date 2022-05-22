@@ -1,5 +1,6 @@
 ﻿using IGDB;
 using IGDB.Models;
+using OpenSaveCloudClient.Core;
 using OpenSaveCloudClient.Models;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace OpenSaveCloudClient
 
         private readonly IGDBClient? _client;
         private GameSave result;
+        private SaveManager saveManager;
 
         public GameSave Result { get { return result; } }
 
@@ -25,6 +27,7 @@ namespace OpenSaveCloudClient
         {
             InitializeComponent();
             _client = iGDBClient;
+            saveManager = SaveManager.GetInstance();
             if (_client == null)
             {
                 NoCoverLabel.Text = "IGDB is not configured";
@@ -73,6 +76,7 @@ namespace OpenSaveCloudClient
 
         private void NameBox_TextChanged(object sender, EventArgs e)
         {
+            NameWarningLabel.Visible = saveManager.Saves.Exists(g => g.Name == NameBox.Text);
             if (_client != null)
             {
                 timer1.Stop();
@@ -90,6 +94,16 @@ namespace OpenSaveCloudClient
                 if (string.IsNullOrWhiteSpace(NameBox.Text))
                 {
                     NameBox.Text = path.Split(Path.DirectorySeparatorChar).Last();
+                }
+                bool exist = saveManager.Saves.Exists(g => g.FolderPath == path);
+                if (exist)
+                {
+                    AddButton.Enabled = false;
+                    PathErrorLabel.Visible = true;
+                } else
+                {
+                    AddButton.Enabled = true;
+                    PathErrorLabel.Visible = false;
                 }
             }
         }
@@ -113,6 +127,16 @@ namespace OpenSaveCloudClient
                 {
                     NameBox.Text = LocationBox.Text.Split(Path.DirectorySeparatorChar).Last();
                 }
+                if (NameWarningLabel.Enabled)
+                {
+                   if (MessageBox.Show(
+                        "There is already a game with this name in the library. Would you like to add it anyway?",
+                        "This name already exist",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question) == DialogResult.No) {
+                        return;
+                    }
+                }
                 result = new GameSave(NameBox.Text, "", LocationBox.Text, null, 0);
                 DialogResult = DialogResult.OK;
                 Close();
@@ -125,7 +149,7 @@ namespace OpenSaveCloudClient
         private void LockControls(bool value)
         {
             value = !value;
-            button1.Enabled = value;
+            AddButton.Enabled = value;
             NameBox.Enabled = value;
             LocationBox.Enabled = value;
             pathButton.Enabled = value;

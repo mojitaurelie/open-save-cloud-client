@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddGameForm));
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.NameWarningLabel = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.pathButton = new System.Windows.Forms.Button();
@@ -40,8 +41,9 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.NoCoverLabel = new System.Windows.Forms.Label();
             this.CoverPicture = new System.Windows.Forms.PictureBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.AddButton = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.PathErrorLabel = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CoverPicture)).BeginInit();
@@ -63,6 +65,7 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.NameWarningLabel);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.pathButton);
@@ -75,10 +78,21 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Game information";
             // 
+            // NameWarningLabel
+            // 
+            this.NameWarningLabel.AutoSize = true;
+            this.NameWarningLabel.ForeColor = System.Drawing.Color.Coral;
+            this.NameWarningLabel.Location = new System.Drawing.Point(15, 113);
+            this.NameWarningLabel.Name = "NameWarningLabel";
+            this.NameWarningLabel.Size = new System.Drawing.Size(421, 25);
+            this.NameWarningLabel.TabIndex = 5;
+            this.NameWarningLabel.Text = "There is already a game with this name in the library";
+            this.NameWarningLabel.Visible = false;
+            // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(15, 132);
+            this.label3.Location = new System.Drawing.Point(15, 161);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(169, 25);
             this.label3.TabIndex = 4;
@@ -96,7 +110,7 @@
             // pathButton
             // 
             this.pathButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pathButton.Location = new System.Drawing.Point(571, 157);
+            this.pathButton.Location = new System.Drawing.Point(571, 186);
             this.pathButton.Name = "pathButton";
             this.pathButton.Size = new System.Drawing.Size(47, 34);
             this.pathButton.TabIndex = 2;
@@ -108,7 +122,7 @@
             // 
             this.LocationBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.LocationBox.Location = new System.Drawing.Point(15, 160);
+            this.LocationBox.Location = new System.Drawing.Point(15, 189);
             this.LocationBox.Name = "LocationBox";
             this.LocationBox.ReadOnly = true;
             this.LocationBox.Size = new System.Drawing.Size(550, 31);
@@ -162,21 +176,32 @@
             this.CoverPicture.TabStop = false;
             this.CoverPicture.Visible = false;
             // 
-            // button1
+            // AddButton
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(943, 508);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(112, 34);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "Add";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.AddButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.AddButton.Location = new System.Drawing.Point(943, 508);
+            this.AddButton.Name = "AddButton";
+            this.AddButton.Size = new System.Drawing.Size(112, 34);
+            this.AddButton.TabIndex = 3;
+            this.AddButton.Text = "Add";
+            this.AddButton.UseVisualStyleBackColor = true;
+            this.AddButton.Click += new System.EventHandler(this.button1_Click);
             // 
             // timer1
             // 
             this.timer1.Interval = 350;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // PathErrorLabel
+            // 
+            this.PathErrorLabel.AutoSize = true;
+            this.PathErrorLabel.ForeColor = System.Drawing.Color.IndianRed;
+            this.PathErrorLabel.Location = new System.Drawing.Point(483, 513);
+            this.PathErrorLabel.Name = "PathErrorLabel";
+            this.PathErrorLabel.Size = new System.Drawing.Size(454, 25);
+            this.PathErrorLabel.TabIndex = 4;
+            this.PathErrorLabel.Text = "There is already a game following this path in the library";
+            this.PathErrorLabel.Visible = false;
             // 
             // AddGameForm
             // 
@@ -184,7 +209,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(1067, 554);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.PathErrorLabel);
+            this.Controls.Add(this.AddButton);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label1);
@@ -209,7 +235,7 @@
         private Label label1;
         private GroupBox groupBox1;
         private GroupBox groupBox2;
-        private Button button1;
+        private Button AddButton;
         private TextBox LocationBox;
         private TextBox NameBox;
         private Button pathButton;
@@ -218,5 +244,7 @@
         private Label NoCoverLabel;
         private PictureBox CoverPicture;
         private System.Windows.Forms.Timer timer1;
+        private Label NameWarningLabel;
+        private Label PathErrorLabel;
     }
 }

@@ -58,6 +58,22 @@ namespace OpenSaveCloudClient.Core
             OnNewMessage(args);
         }
 
+        public void AddWarning(string message)
+        {
+            Log log = new()
+            {
+                Message = message,
+                Severity = LogSeverity.Warning,
+            };
+            messages.Add(log);
+            NewMessageEventArgs args = new()
+            {
+                Message = message,
+                Severity = LogSeverity.Warning,
+            };
+            OnNewMessage(args);
+        }
+
         public void Clear()
         {
             messages.Clear();
