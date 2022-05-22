@@ -49,7 +49,6 @@ namespace OpenSaveCloudClient
                 else
                 {
                     this.Invoke((MethodInvoker)delegate {
-                        AddButton.Enabled = true;
                         LogoutButton.Enabled = true;
                         AboutButton.Enabled = true;
                         if (_configuration.GetBoolean("synchronization.at_login", true))
@@ -57,6 +56,7 @@ namespace OpenSaveCloudClient
                             SyncButton_Click(sender, e);
                         } else
                         {
+                            AddButton.Enabled = true;
                             SyncButton.Enabled = true;
                         }
                     });
@@ -81,7 +81,6 @@ namespace OpenSaveCloudClient
             } else
             {
                 Enabled = true;
-                AddButton.Enabled = true;
                 LogoutButton.Enabled = true;
                 AboutButton.Enabled = true;
                 if (_configuration.GetBoolean("synchronization.at_login", true))
@@ -90,6 +89,7 @@ namespace OpenSaveCloudClient
                 }
                 else
                 {
+                    AddButton.Enabled = true;
                     SyncButton.Enabled = true;
                 }
             }
@@ -278,10 +278,12 @@ namespace OpenSaveCloudClient
 
         private void SyncButton_Click(object sender, EventArgs e)
         {
+            AddButton.Enabled = false;
             SyncButton.Enabled = false;
             new Thread(() => { 
                 serverConnector.Synchronize();
                 this.Invoke((MethodInvoker)delegate {
+                    AddButton.Enabled = true;
                     SyncButton.Enabled = true;
                 });
             }).Start();
