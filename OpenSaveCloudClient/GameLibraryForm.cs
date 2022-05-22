@@ -1,6 +1,7 @@
 using OpenSaveCloudClient.Models;
 using OpenSaveCloudClient.Core;
 using IGDB;
+using OpenSaveCloudClient.Models.Remote;
 
 namespace OpenSaveCloudClient
 {
@@ -12,15 +13,18 @@ namespace OpenSaveCloudClient
         private readonly SaveManager saveManager;
         private readonly TaskManager taskManager;
         private readonly ServerConnector serverConnector;
-        
+        private readonly LogManager logManager;
+
 
         public GameLibrary()
         {
             InitializeComponent();
             saveManager = SaveManager.GetInstance();
             taskManager = TaskManager.GetInstance();
+            taskManager.TaskChanged += taskManager_TaskChanged;
             serverConnector = ServerConnector.GetInstance();
             _configuration = Configuration.GetInstance();
+            logManager = LogManager.GetInstance();
             if (_configuration.GetBoolean("igdb.enabled", false))
             {
                 string clientId = _configuration.GetString("igdb.client_id", "");
@@ -78,24 +82,28 @@ namespace OpenSaveCloudClient
             string taskUuid = "";
             try
             {
-                this.Invoke((MethodInvoker)delegate {
-                    taskUuid = StartTask(String.Format("Archiving \"{0}\"", newGame.Name), 1);
-                });
-                newGame.Archive();
-                saveManager.Saves.Add(newGame);
-                saveManager.Save();
-                this.Invoke((MethodInvoker)delegate {
-                    RefreshList();
+                taskUuid = StartTask(String.Format("Archiving \"{0}\"", newGame.Name), true, 1);
+                Game? g = serverConnector.CreateGame(newGame.Name);
+                if (g != null)
+                {
+                    newGame.Id = g.Id;
+                    newGame.Archive();
+                    saveManager.Saves.Add(newGame);
+                    saveManager.Save();
                     SetTaskEnded(taskUuid);
-                });
-            }
-            catch (Exception)
-            {
-                this.statusStrip1.Invoke((MethodInvoker)delegate {
                     this.Invoke((MethodInvoker)delegate {
-                        SetTaskFailed(taskUuid);
+                        RefreshList();
                     });
-                });
+                } else
+                {
+                    logManager.AddError(new Exception("Failed to create game on the server"));
+                    SetTaskFailed(taskUuid);
+                }
+            }
+            catch (Exception ex)
+            {
+                logManager.AddError(ex);
+                SetTaskFailed(taskUuid);
             }
         }
 
@@ -115,24 +123,20 @@ namespace OpenSaveCloudClient
             }
         }
 
-        private string StartTask(string label, int maxProgress)
+        private string StartTask(string label, bool undefined, int maxProgress)
         {
-            toolStripStatusLabel1.Text = string.Format("{0}...", label);
-            return taskManager.StartTask(label, maxProgress);
+            return taskManager.StartTask(label, undefined, maxProgress);
         }
 
         private void SetTaskEnded(string uuid)
         {
             try
             {
-                var task = taskManager.GetTask(uuid);
-                task.Progress = task.Max;
-                task.Status = AsyncTaskStatus.Ended;
-                toolStripStatusLabel1.Text = string.Format("{0} finished", task.Label);
+                taskManager.UpdateTaskStatus(uuid, AsyncTaskStatus.Ended);
             }
             catch (Exception ex)
             {
-                //todo: catch exception
+                logManager.AddError(ex);
             }
         }
 
@@ -140,14 +144,33 @@ namespace OpenSaveCloudClient
         {
             try
             {
-                var task = taskManager.GetTask(uuid);
-                task.Status = AsyncTaskStatus.Failed;
-                toolStripStatusLabel1.Text = string.Format("{0} failed", task.Label);
+                taskManager.UpdateTaskStatus(uuid, AsyncTaskStatus.Failed);
             }
             catch (Exception ex)
             {
-                //todo: catch exception
+                logManager.AddError(ex);
             }
+        }
+
+        private void taskManager_TaskChanged(object? sender, TaskChangedEventArgs e)
+        {
+            string text = "";
+            switch (e.TaskInformation.Status)
+            {
+                case AsyncTaskStatus.Running:
+                    text = e.TaskInformation.Label;
+                    break;
+                case AsyncTaskStatus.Stopped:
+                    text = String.Format("Stopped: {0}", e.TaskInformation.Label);
+                    break;
+                case AsyncTaskStatus.Failed:
+                    text = String.Format("Failed: {0}", e.TaskInformation.Label);
+                    break;
+                case AsyncTaskStatus.Ended:
+                    text = String.Format("Ended: {0}", e.TaskInformation.Label);
+                    break;
+            }
+            toolStripStatusLabel1.Text = text;
         }
 
         private void LogoutButton_Click(object sender, EventArgs e)
@@ -160,6 +183,23 @@ namespace OpenSaveCloudClient
         {
             AboutBox aboutBox = new();
             aboutBox.ShowDialog();
+        }
+
+        private void LogButton_Click(object sender, EventArgs e)
+        {
+            LogsForm form = new();
+            form.Show();
+        }
+
+        private void toolStripDropDownButton1_Click(object sender, EventArgs e)
+        {
+            TasksForm form = new();
+            form.Show();
+        }
+
+        private void SyncButton_Click(object sender, EventArgs e)
+        {
+            new Thread(() => serverConnector.Synchronize()).Start();
         }
     }
 }

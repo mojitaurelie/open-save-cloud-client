@@ -75,5 +75,11 @@ namespace OpenSaveCloudClient
             PasswordTextBox.Enabled = value;
             LoginButton.Enabled = value;
         }
+
+        private void AboutButton_Click(object sender, EventArgs e)
+        {
+            LogsForm form = new();
+            form.Show();
+        }
     }
 }

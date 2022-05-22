@@ -16,13 +16,15 @@ namespace OpenSaveCloudClient.Core
         private readonly Dictionary<string, AsyncTaskInformation> _tasks;
         private readonly Mutex mut;
 
+        public List<AsyncTaskInformation> TasksInformation { get { return _tasks.Values.ToList();  } }
+
         private TaskManager()
         {
             _tasks = new Dictionary<string, AsyncTaskInformation>();
             mut = new Mutex();
             timer = new System.Timers.Timer
             {
-                Interval = 2000
+                Interval = 10000
             };
             timer.Elapsed += timer_Tick;
             timer.Start();
@@ -37,16 +39,59 @@ namespace OpenSaveCloudClient.Core
             return instance;
         }
 
-        public string StartTask(string label, int progressMax)
+        public string StartTask(string label, bool undefined, int progressMax)
         {
             string uuid = Guid.NewGuid().ToString();
-            _tasks.Add(uuid, new AsyncTaskInformation(label, progressMax));
+            AsyncTaskInformation ati = new(uuid, label, undefined, progressMax);
+            _tasks.Add(uuid, ati);
+            TaskChangedEventArgs args = new()
+            {
+                TaskInformation = ati
+            };
+            OnTaskChanged(args);
             return uuid;
         }
 
-        public AsyncTaskInformation GetTask(string uuid)
+        public void UpdateTaskProgress(string uuid, int progress)
         {
-            return _tasks[uuid];
+            try
+            {
+                AsyncTaskInformation task = _tasks[uuid];
+                task.Add(progress);
+                task.Undefined = false;
+                TaskChangedEventArgs args = new()
+                {
+                    TaskInformation = task
+                };
+                OnTaskChanged(args);
+            }
+            catch(Exception)
+            {
+
+            }
+        }
+
+        public void UpdateTaskStatus(string uuid, AsyncTaskStatus status)
+        {
+            try
+            {
+                AsyncTaskInformation task = _tasks[uuid];
+                if (status != AsyncTaskStatus.Running)
+                {
+                    task.Progress = task.Max;
+                    task.Undefined = false;
+                }
+                task.Status = status;
+                TaskChangedEventArgs args = new()
+                {
+                    TaskInformation = task
+                };
+                OnTaskChanged(args);
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         private void timer_Tick(object? sender, EventArgs e)
@@ -66,6 +111,10 @@ namespace OpenSaveCloudClient.Core
                 {
                     _tasks.Remove(uuid);
                 }
+                if (toDelete.Count > 0)
+                {
+                    OnTaskCleared(new TaskClearedEventArgs());
+                }
             }
             finally
             {
@@ -73,5 +122,35 @@ namespace OpenSaveCloudClient.Core
             }
         }
 
+        protected virtual void OnTaskChanged(TaskChangedEventArgs e)
+        {
+            EventHandler<TaskChangedEventArgs> handler = TaskChanged;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        protected virtual void OnTaskCleared(TaskClearedEventArgs e)
+        {
+            EventHandler<TaskClearedEventArgs> handler = TaskCleared;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        public event EventHandler<TaskChangedEventArgs> TaskChanged;
+        public event EventHandler<TaskClearedEventArgs> TaskCleared;
+
+    }
+
+    public class TaskChangedEventArgs : EventArgs
+    {
+        public AsyncTaskInformation TaskInformation { get; set; }
+    }
+
+    public class TaskClearedEventArgs : EventArgs
+    {
     }
 }

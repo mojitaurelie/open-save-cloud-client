@@ -39,8 +39,10 @@
             this.label4 = new System.Windows.Forms.Label();
             this.PortNumericBox = new System.Windows.Forms.NumericUpDown();
             this.LoginButton = new System.Windows.Forms.Button();
+            this.AboutButton = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PortNumericBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.AboutButton)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -150,12 +152,25 @@
             this.LoginButton.UseVisualStyleBackColor = true;
             this.LoginButton.Click += new System.EventHandler(this.LoginButton_Click);
             // 
+            // AboutButton
+            // 
+            this.AboutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.AboutButton.Image = ((System.Drawing.Image)(resources.GetObject("AboutButton.Image")));
+            this.AboutButton.Location = new System.Drawing.Point(12, 471);
+            this.AboutButton.Name = "AboutButton";
+            this.AboutButton.Size = new System.Drawing.Size(25, 25);
+            this.AboutButton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.AboutButton.TabIndex = 6;
+            this.AboutButton.TabStop = false;
+            this.AboutButton.Click += new System.EventHandler(this.AboutButton_Click);
+            // 
             // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(1061, 508);
+            this.Controls.Add(this.AboutButton);
             this.Controls.Add(this.LoginButton);
             this.Controls.Add(this.PortNumericBox);
             this.Controls.Add(this.label4);
@@ -178,6 +193,7 @@
             this.TopMost = true;
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PortNumericBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.AboutButton)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -195,5 +211,6 @@
         private Label label4;
         private NumericUpDown PortNumericBox;
         private Button LoginButton;
+        private PictureBox AboutButton;
     }
 }
