@@ -6,33 +6,34 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.IO.Compression;
 using System.Security.Cryptography;
+using OpenSaveCloudClient.Core;
 
 namespace OpenSaveCloudClient.Models
 {
     public class GameSave
     {
 
-        private int id;
+        private long id;
         private string uuid;
         private readonly string name;
         private readonly string folderPath;
         private readonly string description;
         private string hash;
+        private string currentHash;
         private readonly string? coverPath;
-        private int revision;
+        private long revision;
         private bool synced;
-        private bool localOnly;
 
-        public int Id { get { return id; } set { id = value; } }
+        public long Id { get { return id; } set { id = value; } }
         public string Uuid { get { return uuid; } }
         public string Name { get { return name; } }
         public string Description { get { return description; } }
         public string FolderPath { get { return folderPath; } }
         public string Hash { get { return hash; } }
+        public string CurrentHash { get { return currentHash; } }
         public string? CoverPath { get { return coverPath; } }   
-        public int Revision { get { return revision; } set { revision = value; } }
+        public long Revision { get { return revision; } set { revision = value; } }
         public bool Synced { get { return synced; } set { synced = value; } }
-        public bool LocalOnly { get { return localOnly; } set { localOnly = value; } }
 
         public GameSave(string name, string description, string folderPath, string? coverPath, int revision)
         {
@@ -45,11 +46,10 @@ namespace OpenSaveCloudClient.Models
             this.coverPath = coverPath;
             this.revision = revision;
             synced = false;
-            localOnly = true;
         }
 
         [JsonConstructor]
-        public GameSave(int id, string uuid, string name, string folderPath, string description, string hash, string? coverPath, int revision, bool synced, bool localOnly)
+        public GameSave(long id, string uuid, string name, string folderPath, string description, string hash, string currentHash, string? coverPath, long revision, bool synced)
         {
             this.id = id;
             this.uuid = uuid;
@@ -57,10 +57,10 @@ namespace OpenSaveCloudClient.Models
             this.folderPath = folderPath;
             this.description = description;
             this.hash = hash;
+            this.currentHash = currentHash;
             this.coverPath = coverPath;
             this.revision = revision;
             this.synced = synced;
-            this.localOnly = localOnly;
         }
 
         public void Archive()
@@ -89,6 +89,26 @@ namespace OpenSaveCloudClient.Models
                     hash = BitConverter.ToString(h).Replace("-", "").ToLowerInvariant();
                 }
             }
+        }
+
+        public bool DetectChanges()
+        {
+            byte[]? hashBytes = HashTool.HashDirectory(FolderPath);
+            if (hashBytes == null)
+            {
+                throw new Exception(String.Format("failed to get hash of directory '{0}'", FolderPath));
+            }
+            currentHash = BitConverter.ToString(hashBytes).Replace("-", "");
+            if (currentHash != hash)
+            {
+                synced = false;
+            }
+            return (currentHash != hash);
+        }
+
+        public void UpdateHash()
+        {
+            hash = currentHash;
         }
     }
 }

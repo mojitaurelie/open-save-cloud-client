@@ -127,7 +127,7 @@ namespace OpenSaveCloudClient
                 {
                     NameBox.Text = LocationBox.Text.Split(Path.DirectorySeparatorChar).Last();
                 }
-                if (NameWarningLabel.Enabled)
+                if (NameWarningLabel.Visible)
                 {
                    if (MessageBox.Show(
                         "There is already a game with this name in the library. Would you like to add it anyway?",
@@ -135,7 +135,7 @@ namespace OpenSaveCloudClient
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Question) == DialogResult.No) {
                         return;
-                    }
+                   }
                 }
                 result = new GameSave(NameBox.Text, "", LocationBox.Text, null, 0);
                 DialogResult = DialogResult.OK;

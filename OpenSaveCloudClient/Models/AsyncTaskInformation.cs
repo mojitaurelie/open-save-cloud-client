@@ -10,14 +10,14 @@ namespace OpenSaveCloudClient.Models
     {
 
         private readonly string label;
-        private readonly int max;
+        private int max;
         private int progress;
         private AsyncTaskStatus status;
         private readonly string uuid;
         private bool undefined;
 
         public string Label { get { return label; } }
-        public int Max { get { return max; } }
+        public int Max { get { return max; } set { max = value; } }
         public int Progress { get { return progress; } set { progress = value; } }
         public AsyncTaskStatus Status { get { return status; } set { status = value; } }
 

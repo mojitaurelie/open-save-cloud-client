@@ -38,6 +38,7 @@ namespace OpenSaveCloudClient
             pb.Minimum = 0;
             pb.Maximum = max;
             pb.Value = value;
+            pb.MarqueeAnimationSpeed = 20;
             if (undefined)
             {
                 pb.Style = ProgressBarStyle.Marquee;

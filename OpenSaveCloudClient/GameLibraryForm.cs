@@ -49,15 +49,13 @@ namespace OpenSaveCloudClient
                 else
                 {
                     this.Invoke((MethodInvoker)delegate {
-                        LogoutButton.Enabled = true;
                         AboutButton.Enabled = true;
                         if (_configuration.GetBoolean("synchronization.at_login", true))
                         {
                             SyncButton_Click(sender, e);
                         } else
                         {
-                            AddButton.Enabled = true;
-                            SyncButton.Enabled = true;
+                            LockCriticalControls(false);
                         }
                     });
                 }
@@ -81,7 +79,6 @@ namespace OpenSaveCloudClient
             } else
             {
                 Enabled = true;
-                LogoutButton.Enabled = true;
                 AboutButton.Enabled = true;
                 if (_configuration.GetBoolean("synchronization.at_login", true))
                 {
@@ -89,8 +86,7 @@ namespace OpenSaveCloudClient
                 }
                 else
                 {
-                    AddButton.Enabled = true;
-                    SyncButton.Enabled = true;
+                    LockCriticalControls(false);
                 }
             }
         }
@@ -150,6 +146,7 @@ namespace OpenSaveCloudClient
             foreach (GameSave game in saveManager.Saves)
             {
                 ListViewItem itm = listView1.Items.Add(game.Name);
+                itm.SubItems.Add(game.Uuid);
                 itm.ImageKey = "unknown_cover.png";
             }
         }
@@ -201,25 +198,16 @@ namespace OpenSaveCloudClient
                     text = String.Format("Ended: {0}", e.TaskInformation.Label);
                     break;
             }
-            if (taskManager.TasksInformation.Count > 1)
-            {
-                this.Invoke((MethodInvoker)delegate {
-                    toolStripStatusLabel1.Text = String.Format("{0} (and {1} more)", text, taskManager.TasksInformation.Count);
-                });
-            }
-            else
-            {
-                this.Invoke((MethodInvoker)delegate {
-                    toolStripStatusLabel1.Text = text;
-                });
-            }
+            this.Invoke((MethodInvoker)delegate {
+                toolStripProgressBar1.Visible = (taskManager.TasksInformation.Count(ti => ti.Status == AsyncTaskStatus.Running) > 0);
+                toolStripStatusLabel1.Text = text;
+            });
         }
 
         private void LogoutButton_Click(object sender, EventArgs e)
         {
             serverConnector.Logout();
-            AddButton.Enabled = false;
-            LogoutButton.Enabled = false;
+            LockCriticalControls(true);
             AboutButton.Enabled = false;
             ShowLoginForm();
         }
@@ -278,15 +266,112 @@ namespace OpenSaveCloudClient
 
         private void SyncButton_Click(object sender, EventArgs e)
         {
-            AddButton.Enabled = false;
-            SyncButton.Enabled = false;
+            LockCriticalControls(true);
             new Thread(() => { 
                 serverConnector.Synchronize();
                 this.Invoke((MethodInvoker)delegate {
-                    AddButton.Enabled = true;
-                    SyncButton.Enabled = true;
+                    LockCriticalControls(false);
                 });
             }).Start();
+        }
+
+        private void DownloadButton_Click(object sender, EventArgs e)
+        {
+            DownloadGameForm form = new DownloadGameForm();
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                List<GameSave> newGames = form.Result;
+                new Thread(async () => 
+                {
+                    string taskUuid = StartTask("Downloading games from server", false, newGames.Count);
+                    foreach (GameSave gameSave in newGames)
+                    {
+                        try
+                        {
+                            saveManager.Saves.Add(gameSave);
+                            List<GameSave> l = new()
+                            {
+                                gameSave
+                            };
+                            await serverConnector.DownloadGamesAsync(l);
+                        } catch (Exception ex)
+                        {
+                            logManager.AddError(ex);
+                        }
+                        taskManager.UpdateTaskProgress(taskUuid, 1);
+                    }
+                    saveManager.Save();
+                    SetTaskEnded(taskUuid);
+                    this.Invoke((MethodInvoker)delegate {
+                        RefreshList();
+                    });
+                }).Start();
+            }
+        }
+
+        private void LockCriticalControls(bool l)
+        {
+            l = !l;
+            AddButton.Enabled = l;
+            SyncButton.Enabled = l;
+            DownloadButton.Enabled = l;
+            LogoutButton.Enabled = l;
+        }
+
+        private void listView1_DoubleClick(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count == 1 && SyncButton.Enabled)
+            {
+                GameSave? g = saveManager.Saves.FirstOrDefault(g => g.Uuid == listView1.SelectedItems[0].SubItems[1].Text);
+                if (g != null)
+                {
+                    DetailForm detail = new(g);
+                    if (detail.ShowDialog() == DialogResult.OK)
+                    {
+                        ForcedSyncResult? r = detail.Result;
+                        if (r != null)
+                        {
+                            LockCriticalControls(true);
+                            new Thread(async () =>
+                            {
+                                List<GameSave> l = new()
+                                {
+                                    g
+                                };
+                                string taskUuid;
+                                switch (r)
+                                {
+                                    case ForcedSyncResult.Download:
+                                        taskUuid = StartTask("Forcing download of " + g.Name, true, 1);
+                                        try
+                                        {
+                                            await serverConnector.DownloadGamesAsync(l);
+                                        } finally
+                                        {
+                                            SetTaskEnded(taskUuid);
+                                        }
+                                        break;
+                                    case ForcedSyncResult.Upload:
+                                        taskUuid = StartTask("Forcing upload of " + g.Name, true, 1);
+                                        try
+                                        {
+                                            g.Archive();
+                                            serverConnector.UploadGames(l);
+                                        }
+                                        finally
+                                        {
+                                            SetTaskEnded(taskUuid);
+                                        }
+                                        break;
+                                }
+                                this.Invoke((MethodInvoker)delegate {
+                                    LockCriticalControls(false);
+                                });
+                            }).Start();
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -10,6 +10,6 @@ namespace OpenSaveCloudClient.Models.Remote
     public class UploadGameInfo
     {
         [JsonPropertyName("game_id")]
-        public int GameId { get; set; }
+        public long GameId { get; set; }
     }
 }

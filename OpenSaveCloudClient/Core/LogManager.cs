@@ -28,15 +28,20 @@ namespace OpenSaveCloudClient.Core
 
         public void AddError(Exception ex)
         {
+            AddError(ex.Message);
+        }
+
+        public void AddError(string message)
+        {
             Log log = new()
             {
-                Message = ex.Message,
+                Message = message,
                 Severity = LogSeverity.Error,
             };
             messages.Add(log);
             NewMessageEventArgs args = new()
             {
-                Message = ex.Message,
+                Message = message,
                 Severity = LogSeverity.Error,
             };
             OnNewMessage(args);

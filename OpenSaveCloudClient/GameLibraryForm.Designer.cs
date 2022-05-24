@@ -33,9 +33,11 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.AddButton = new System.Windows.Forms.ToolStripButton();
             this.SyncButton = new System.Windows.Forms.ToolStripButton();
+            this.DownloadButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.ConfigButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -53,7 +55,8 @@
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripDropDownButton1,
-            this.toolStripStatusLabel1});
+            this.toolStripStatusLabel1,
+            this.toolStripProgressBar1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 803);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(1428, 32);
@@ -78,6 +81,14 @@
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(60, 25);
             this.toolStripStatusLabel1.Text = "Ready";
             // 
+            // toolStripProgressBar1
+            // 
+            this.toolStripProgressBar1.MarqueeAnimationSpeed = 20;
+            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
+            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 24);
+            this.toolStripProgressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.toolStripProgressBar1.Visible = false;
+            // 
             // toolStrip1
             // 
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
@@ -85,6 +96,7 @@
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AddButton,
             this.SyncButton,
+            this.DownloadButton,
             this.toolStripSeparator1,
             this.ConfigButton,
             this.toolStripSeparator2,
@@ -118,6 +130,17 @@
             this.SyncButton.Size = new System.Drawing.Size(34, 28);
             this.SyncButton.Text = "Synchronize";
             this.SyncButton.Click += new System.EventHandler(this.SyncButton_Click);
+            // 
+            // DownloadButton
+            // 
+            this.DownloadButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.DownloadButton.Enabled = false;
+            this.DownloadButton.Image = ((System.Drawing.Image)(resources.GetObject("DownloadButton.Image")));
+            this.DownloadButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.DownloadButton.Name = "DownloadButton";
+            this.DownloadButton.Size = new System.Drawing.Size(34, 28);
+            this.DownloadButton.Text = "Download";
+            this.DownloadButton.Click += new System.EventHandler(this.DownloadButton_Click);
             // 
             // toolStripSeparator1
             // 
@@ -186,6 +209,7 @@
             this.listView1.Size = new System.Drawing.Size(1428, 764);
             this.listView1.TabIndex = 2;
             this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.DoubleClick += new System.EventHandler(this.listView1_DoubleClick);
             // 
             // coverList
             // 
@@ -235,5 +259,7 @@
         private ToolStripButton AboutButton;
         private ToolStripButton ErrorLogButton;
         private ToolStripDropDownButton toolStripDropDownButton1;
+        private ToolStripButton DownloadButton;
+        private ToolStripProgressBar toolStripProgressBar1;
     }
 }
