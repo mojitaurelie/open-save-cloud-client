@@ -199,8 +199,8 @@ namespace OpenSaveCloudClient
                     break;
             }
             this.Invoke((MethodInvoker)delegate {
-                toolStripProgressBar1.Visible = (taskManager.TasksInformation.Count(ti => ti.Status == AsyncTaskStatus.Running) > 0);
-                toolStripStatusLabel1.Text = text;
+                MainProgressBar.Visible = (taskManager.TasksInformation.Count(ti => ti.Status == AsyncTaskStatus.Running) > 0);
+                StatusLabel.Text = text;
             });
         }
 
@@ -244,8 +244,8 @@ namespace OpenSaveCloudClient
             if (errors > 0 || warnings > 0)
             {
                 this.Invoke((MethodInvoker)delegate {
-                    ErrorLogButton.Text = label;
-                    ErrorLogButton.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
+                    LogButton.Text = label;
+                    LogButton.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
                 });
             }
         }
@@ -253,8 +253,8 @@ namespace OpenSaveCloudClient
         private void LogManager_LogCleared(object? sender, ClearEventArgs e)
         {
             this.Invoke((MethodInvoker)delegate {
-                ErrorLogButton.Text = "Show logs";
-                ErrorLogButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
+                LogButton.Text = "Show logs";
+                LogButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
             });
         }
 

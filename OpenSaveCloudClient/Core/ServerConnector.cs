@@ -320,6 +320,10 @@ namespace OpenSaveCloudClient.Core
         public async Task DownloadGamesAsync(List<GameSave> toDownload)
         {
             string cachePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "osc", "cache");
+            if (!Directory.Exists(cachePath))
+            {
+                Directory.CreateDirectory(cachePath);
+            }
             string archivePath;
             GameUploadToken? gut;
             foreach (GameSave game in toDownload)

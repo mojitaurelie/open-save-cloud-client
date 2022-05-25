@@ -43,9 +43,10 @@
             this.Progress});
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView1.Location = new System.Drawing.Point(0, 0);
+            this.listView1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(800, 450);
+            this.listView1.Size = new System.Drawing.Size(564, 280);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -53,26 +54,27 @@
             // Task
             // 
             this.Task.Text = "Task";
-            this.Task.Width = 450;
+            this.Task.Width = 350;
             // 
             // Status
             // 
             this.Status.Text = "Status";
-            this.Status.Width = 120;
+            this.Status.Width = 80;
             // 
             // Progress
             // 
             this.Progress.Text = "Progress";
-            this.Progress.Width = 200;
+            this.Progress.Width = 120;
             // 
             // TasksForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.ClientSize = new System.Drawing.Size(564, 280);
             this.Controls.Add(this.listView1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(822, 506);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.MinimumSize = new System.Drawing.Size(580, 319);
             this.Name = "TasksForm";
             this.Text = "Tasks";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TasksForm_FormClosed);

@@ -49,72 +49,80 @@
             this.TitleLabel.AutoEllipsis = true;
             this.TitleLabel.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.TitleLabel.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.TitleLabel.Location = new System.Drawing.Point(12, 9);
+            this.TitleLabel.Location = new System.Drawing.Point(8, 5);
+            this.TitleLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.TitleLabel.Name = "TitleLabel";
-            this.TitleLabel.Size = new System.Drawing.Size(941, 48);
+            this.TitleLabel.Size = new System.Drawing.Size(659, 29);
             this.TitleLabel.TabIndex = 0;
             this.TitleLabel.Text = "_";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 95);
+            this.label2.Location = new System.Drawing.Point(8, 57);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(77, 25);
+            this.label2.Size = new System.Drawing.Size(51, 15);
             this.label2.TabIndex = 1;
             this.label2.Text = "Revision";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 120);
+            this.label3.Location = new System.Drawing.Point(8, 72);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(46, 25);
+            this.label3.Size = new System.Drawing.Size(31, 15);
             this.label3.TabIndex = 2;
             this.label3.Text = "Path";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 145);
+            this.label4.Location = new System.Drawing.Point(8, 87);
+            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(68, 25);
+            this.label4.Size = new System.Drawing.Size(45, 15);
             this.label4.TabIndex = 3;
             this.label4.Text = "Synced";
             // 
             // RevisionLabel
             // 
             this.RevisionLabel.AutoSize = true;
-            this.RevisionLabel.Location = new System.Drawing.Point(125, 95);
+            this.RevisionLabel.Location = new System.Drawing.Point(88, 57);
+            this.RevisionLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.RevisionLabel.Name = "RevisionLabel";
-            this.RevisionLabel.Size = new System.Drawing.Size(16, 25);
+            this.RevisionLabel.Size = new System.Drawing.Size(10, 15);
             this.RevisionLabel.TabIndex = 4;
             this.RevisionLabel.Text = ".";
             // 
             // PathLabel
             // 
             this.PathLabel.AutoSize = true;
-            this.PathLabel.Location = new System.Drawing.Point(125, 120);
+            this.PathLabel.Location = new System.Drawing.Point(88, 72);
+            this.PathLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.PathLabel.Name = "PathLabel";
-            this.PathLabel.Size = new System.Drawing.Size(16, 25);
+            this.PathLabel.Size = new System.Drawing.Size(10, 15);
             this.PathLabel.TabIndex = 5;
             this.PathLabel.Text = ".";
             // 
             // SyncedLabel
             // 
             this.SyncedLabel.AutoSize = true;
-            this.SyncedLabel.Location = new System.Drawing.Point(125, 145);
+            this.SyncedLabel.Location = new System.Drawing.Point(88, 87);
+            this.SyncedLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.SyncedLabel.Name = "SyncedLabel";
-            this.SyncedLabel.Size = new System.Drawing.Size(16, 25);
+            this.SyncedLabel.Size = new System.Drawing.Size(10, 15);
             this.SyncedLabel.TabIndex = 6;
             this.SyncedLabel.Text = ".";
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(12, 176);
+            this.label8.Location = new System.Drawing.Point(8, 107);
+            this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(93, 25);
+            this.label8.Size = new System.Drawing.Size(63, 15);
             this.label8.TabIndex = 7;
             this.label8.Text = "Checksum";
             // 
@@ -122,18 +130,20 @@
             // 
             this.ChecksumBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.ChecksumBox.Location = new System.Drawing.Point(125, 173);
+            this.ChecksumBox.Location = new System.Drawing.Point(88, 104);
+            this.ChecksumBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ChecksumBox.Name = "ChecksumBox";
             this.ChecksumBox.ReadOnly = true;
-            this.ChecksumBox.Size = new System.Drawing.Size(828, 31);
+            this.ChecksumBox.Size = new System.Drawing.Size(581, 23);
             this.ChecksumBox.TabIndex = 8;
             // 
             // UploadButton
             // 
             this.UploadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.UploadButton.Location = new System.Drawing.Point(12, 244);
+            this.UploadButton.Location = new System.Drawing.Point(8, 150);
+            this.UploadButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.UploadButton.Name = "UploadButton";
-            this.UploadButton.Size = new System.Drawing.Size(112, 34);
+            this.UploadButton.Size = new System.Drawing.Size(75, 23);
             this.UploadButton.TabIndex = 9;
             this.UploadButton.Text = "Upload";
             this.UploadButton.UseVisualStyleBackColor = true;
@@ -142,9 +152,10 @@
             // DownloadButton
             // 
             this.DownloadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.DownloadButton.Location = new System.Drawing.Point(130, 244);
+            this.DownloadButton.Location = new System.Drawing.Point(87, 150);
+            this.DownloadButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DownloadButton.Name = "DownloadButton";
-            this.DownloadButton.Size = new System.Drawing.Size(112, 34);
+            this.DownloadButton.Size = new System.Drawing.Size(75, 23);
             this.DownloadButton.TabIndex = 10;
             this.DownloadButton.Text = "Download";
             this.DownloadButton.UseVisualStyleBackColor = true;
@@ -152,9 +163,9 @@
             // 
             // DetailForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(965, 290);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.ClientSize = new System.Drawing.Size(680, 184);
             this.Controls.Add(this.DownloadButton);
             this.Controls.Add(this.UploadButton);
             this.Controls.Add(this.ChecksumBox);
@@ -167,7 +178,8 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.TitleLabel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(987, 346);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.MinimumSize = new System.Drawing.Size(696, 223);
             this.Name = "DetailForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Detail of";

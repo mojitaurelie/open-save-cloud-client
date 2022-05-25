@@ -30,67 +30,51 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameLibrary));
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.coverList = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.AddButton = new System.Windows.Forms.ToolStripButton();
             this.SyncButton = new System.Windows.Forms.ToolStripButton();
             this.DownloadButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.ConfigButton = new System.Windows.Forms.ToolStripButton();
+            this.SettingButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.LogoutButton = new System.Windows.Forms.ToolStripButton();
-            this.ErrorLogButton = new System.Windows.Forms.ToolStripButton();
+            this.LogButton = new System.Windows.Forms.ToolStripButton();
             this.AboutButton = new System.Windows.Forms.ToolStripButton();
-            this.listView1 = new System.Windows.Forms.ListView();
-            this.coverList = new System.Windows.Forms.ImageList(this.components);
-            this.statusStrip1.SuspendLayout();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.TasksButton = new System.Windows.Forms.ToolStripDropDownButton();
+            this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.MainProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStrip1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // statusStrip1
+            // listView1
             // 
-            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripDropDownButton1,
-            this.toolStripStatusLabel1,
-            this.toolStripProgressBar1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 803);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1428, 32);
-            this.statusStrip1.TabIndex = 0;
-            this.statusStrip1.Text = "statusStrip1";
+            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.listView1.LargeImageList = this.coverList;
+            this.listView1.Location = new System.Drawing.Point(0, 0);
+            this.listView1.MultiSelect = false;
+            this.listView1.Name = "listView1";
+            this.listView1.ShowGroups = false;
+            this.listView1.ShowItemToolTips = true;
+            this.listView1.Size = new System.Drawing.Size(1506, 766);
+            this.listView1.TabIndex = 2;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.DoubleClick += new System.EventHandler(this.listView1_DoubleClick);
             // 
-            // toolStripDropDownButton1
+            // coverList
             // 
-            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
-            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            this.toolStripDropDownButton1.ShowDropDownArrow = false;
-            this.toolStripDropDownButton1.Size = new System.Drawing.Size(28, 29);
-            this.toolStripDropDownButton1.Text = "toolStripDropDownButton1";
-            this.toolStripDropDownButton1.Click += new System.EventHandler(this.toolStripDropDownButton1_Click);
-            // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.BackColor = System.Drawing.SystemColors.Control;
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(60, 25);
-            this.toolStripStatusLabel1.Text = "Ready";
-            // 
-            // toolStripProgressBar1
-            // 
-            this.toolStripProgressBar1.MarqueeAnimationSpeed = 20;
-            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
-            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 24);
-            this.toolStripProgressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
-            this.toolStripProgressBar1.Visible = false;
+            this.coverList.ColorDepth = System.Windows.Forms.ColorDepth.Depth24Bit;
+            this.coverList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("coverList.ImageStream")));
+            this.coverList.TransparentColor = System.Drawing.Color.Transparent;
+            this.coverList.Images.SetKeyName(0, "unknown_cover.png");
             // 
             // toolStrip1
             // 
+            this.toolStrip1.CanOverflow = false;
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -98,15 +82,16 @@
             this.SyncButton,
             this.DownloadButton,
             this.toolStripSeparator1,
-            this.ConfigButton,
+            this.SettingButton,
             this.toolStripSeparator2,
             this.LogoutButton,
-            this.ErrorLogButton,
+            this.LogButton,
             this.AboutButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1428, 33);
-            this.toolStrip1.TabIndex = 1;
+            this.toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.toolStrip1.Size = new System.Drawing.Size(1506, 33);
+            this.toolStrip1.TabIndex = 3;
             this.toolStrip1.Text = "toolStrip1";
             // 
             // AddButton
@@ -117,7 +102,7 @@
             this.AddButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.AddButton.Name = "AddButton";
             this.AddButton.Size = new System.Drawing.Size(34, 28);
-            this.AddButton.Text = "Add a game";
+            this.AddButton.Text = "Add";
             this.AddButton.Click += new System.EventHandler(this.AddButton_Click);
             // 
             // SyncButton
@@ -128,7 +113,7 @@
             this.SyncButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.SyncButton.Name = "SyncButton";
             this.SyncButton.Size = new System.Drawing.Size(34, 28);
-            this.SyncButton.Text = "Synchronize";
+            this.SyncButton.Text = "Sync";
             this.SyncButton.Click += new System.EventHandler(this.SyncButton_Click);
             // 
             // DownloadButton
@@ -139,7 +124,7 @@
             this.DownloadButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.DownloadButton.Name = "DownloadButton";
             this.DownloadButton.Size = new System.Drawing.Size(34, 28);
-            this.DownloadButton.Text = "Download";
+            this.DownloadButton.Text = "Download from server";
             this.DownloadButton.Click += new System.EventHandler(this.DownloadButton_Click);
             // 
             // toolStripSeparator1
@@ -147,15 +132,15 @@
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 33);
             // 
-            // ConfigButton
+            // SettingButton
             // 
-            this.ConfigButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ConfigButton.Image = ((System.Drawing.Image)(resources.GetObject("ConfigButton.Image")));
-            this.ConfigButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ConfigButton.Name = "ConfigButton";
-            this.ConfigButton.Size = new System.Drawing.Size(34, 28);
-            this.ConfigButton.Text = "Settings";
-            this.ConfigButton.Click += new System.EventHandler(this.ConfigButton_Click);
+            this.SettingButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.SettingButton.Image = ((System.Drawing.Image)(resources.GetObject("SettingButton.Image")));
+            this.SettingButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.SettingButton.Name = "SettingButton";
+            this.SettingButton.Size = new System.Drawing.Size(34, 28);
+            this.SettingButton.Text = "Settings";
+            this.SettingButton.Click += new System.EventHandler(this.ConfigButton_Click);
             // 
             // toolStripSeparator2
             // 
@@ -173,15 +158,15 @@
             this.LogoutButton.Text = "Logout";
             this.LogoutButton.Click += new System.EventHandler(this.LogoutButton_Click);
             // 
-            // ErrorLogButton
+            // LogButton
             // 
-            this.ErrorLogButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ErrorLogButton.Image = ((System.Drawing.Image)(resources.GetObject("ErrorLogButton.Image")));
-            this.ErrorLogButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ErrorLogButton.Name = "ErrorLogButton";
-            this.ErrorLogButton.Size = new System.Drawing.Size(34, 28);
-            this.ErrorLogButton.Text = "Show log";
-            this.ErrorLogButton.Click += new System.EventHandler(this.LogButton_Click);
+            this.LogButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.LogButton.Image = ((System.Drawing.Image)(resources.GetObject("LogButton.Image")));
+            this.LogButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.LogButton.Name = "LogButton";
+            this.LogButton.Size = new System.Drawing.Size(34, 28);
+            this.LogButton.Text = "Show logs";
+            this.LogButton.Click += new System.EventHandler(this.LogButton_Click);
             // 
             // AboutButton
             // 
@@ -194,72 +179,84 @@
             this.AboutButton.Text = "About";
             this.AboutButton.Click += new System.EventHandler(this.AboutButton_Click);
             // 
-            // listView1
+            // statusStrip1
             // 
-            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.listView1.LargeImageList = this.coverList;
-            this.listView1.Location = new System.Drawing.Point(0, 36);
-            this.listView1.MultiSelect = false;
-            this.listView1.Name = "listView1";
-            this.listView1.ShowGroups = false;
-            this.listView1.ShowItemToolTips = true;
-            this.listView1.Size = new System.Drawing.Size(1428, 764);
-            this.listView1.TabIndex = 2;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.DoubleClick += new System.EventHandler(this.listView1_DoubleClick);
+            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.TasksButton,
+            this.StatusLabel,
+            this.MainProgressBar});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 735);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
+            this.statusStrip1.Size = new System.Drawing.Size(1506, 31);
+            this.statusStrip1.TabIndex = 4;
+            this.statusStrip1.Text = "statusStrip1";
             // 
-            // coverList
+            // TasksButton
             // 
-            this.coverList.ColorDepth = System.Windows.Forms.ColorDepth.Depth24Bit;
-            this.coverList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("coverList.ImageStream")));
-            this.coverList.TransparentColor = System.Drawing.Color.Transparent;
-            this.coverList.Images.SetKeyName(0, "unknown_cover.png");
+            this.TasksButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.TasksButton.Image = ((System.Drawing.Image)(resources.GetObject("TasksButton.Image")));
+            this.TasksButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.TasksButton.Name = "TasksButton";
+            this.TasksButton.ShowDropDownArrow = false;
+            this.TasksButton.Size = new System.Drawing.Size(28, 28);
+            this.TasksButton.Text = "Tasks";
+            this.TasksButton.Click += new System.EventHandler(this.toolStripDropDownButton1_Click);
+            // 
+            // StatusLabel
+            // 
+            this.StatusLabel.BackColor = System.Drawing.Color.Transparent;
+            this.StatusLabel.Name = "StatusLabel";
+            this.StatusLabel.Size = new System.Drawing.Size(0, 24);
+            // 
+            // MainProgressBar
+            // 
+            this.MainProgressBar.Name = "MainProgressBar";
+            this.MainProgressBar.Size = new System.Drawing.Size(150, 23);
+            this.MainProgressBar.Visible = false;
             // 
             // GameLibrary
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(1428, 835);
-            this.Controls.Add(this.listView1);
-            this.Controls.Add(this.toolStrip1);
+            this.ClientSize = new System.Drawing.Size(1506, 766);
             this.Controls.Add(this.statusStrip1);
+            this.Controls.Add(this.toolStrip1);
+            this.Controls.Add(this.listView1);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(1450, 891);
+            this.MinimumSize = new System.Drawing.Size(1519, 797);
             this.Name = "GameLibrary";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Game Library";
             this.Load += new System.EventHandler(this.GameLibrary_Load);
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private StatusStrip statusStrip1;
-        private ToolStripStatusLabel toolStripStatusLabel1;
+        private ListView listView1;
+        private ImageList coverList;
         private ToolStrip toolStrip1;
         private ToolStripButton AddButton;
         private ToolStripButton SyncButton;
-        private ToolStripSeparator toolStripSeparator1;
-        private ToolStripButton LogoutButton;
-        private ListView listView1;
-        private ToolStripButton ConfigButton;
-        private ToolStripSeparator toolStripSeparator2;
-        private ImageList coverList;
-        private ToolStripButton AboutButton;
-        private ToolStripButton ErrorLogButton;
-        private ToolStripDropDownButton toolStripDropDownButton1;
         private ToolStripButton DownloadButton;
-        private ToolStripProgressBar toolStripProgressBar1;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripButton SettingButton;
+        private ToolStripSeparator toolStripSeparator2;
+        private ToolStripButton LogoutButton;
+        private ToolStripButton LogButton;
+        private ToolStripButton AboutButton;
+        private StatusStrip statusStrip1;
+        private ToolStripDropDownButton TasksButton;
+        private ToolStripStatusLabel StatusLabel;
+        private ToolStripProgressBar MainProgressBar;
     }
 }

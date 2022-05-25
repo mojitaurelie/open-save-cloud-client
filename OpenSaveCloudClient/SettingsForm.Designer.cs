@@ -52,9 +52,10 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label1.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.label1.Location = new System.Drawing.Point(12, 9);
+            this.label1.Location = new System.Drawing.Point(8, 5);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(147, 48);
+            this.label1.Size = new System.Drawing.Size(100, 32);
             this.label1.TabIndex = 0;
             this.label1.Text = "Settings";
             // 
@@ -68,9 +69,11 @@
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.linkLabel1);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(12, 80);
+            this.groupBox1.Location = new System.Drawing.Point(8, 47);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(483, 478);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Size = new System.Drawing.Size(340, 287);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "IGDB";
@@ -78,44 +81,49 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 403);
+            this.label5.Location = new System.Drawing.Point(4, 242);
+            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(109, 25);
+            this.label5.Size = new System.Drawing.Size(73, 15);
             this.label5.TabIndex = 8;
             this.label5.Text = "Client Secret";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 330);
+            this.label4.Location = new System.Drawing.Point(4, 198);
+            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(79, 25);
+            this.label4.Size = new System.Drawing.Size(52, 15);
             this.label4.TabIndex = 7;
             this.label4.Text = "Client ID";
             // 
             // IgdbClientSecret
             // 
             this.IgdbClientSecret.Enabled = false;
-            this.IgdbClientSecret.Location = new System.Drawing.Point(6, 431);
+            this.IgdbClientSecret.Location = new System.Drawing.Point(4, 259);
+            this.IgdbClientSecret.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.IgdbClientSecret.Name = "IgdbClientSecret";
-            this.IgdbClientSecret.Size = new System.Drawing.Size(471, 31);
+            this.IgdbClientSecret.Size = new System.Drawing.Size(331, 23);
             this.IgdbClientSecret.TabIndex = 6;
             // 
             // IgdbClientID
             // 
             this.IgdbClientID.Enabled = false;
-            this.IgdbClientID.Location = new System.Drawing.Point(6, 358);
+            this.IgdbClientID.Location = new System.Drawing.Point(4, 215);
+            this.IgdbClientID.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.IgdbClientID.Name = "IgdbClientID";
-            this.IgdbClientID.Size = new System.Drawing.Size(471, 31);
+            this.IgdbClientID.Size = new System.Drawing.Size(331, 23);
             this.IgdbClientID.TabIndex = 5;
             // 
             // IgdbCheckBox
             // 
             this.IgdbCheckBox.AutoSize = true;
             this.IgdbCheckBox.Enabled = false;
-            this.IgdbCheckBox.Location = new System.Drawing.Point(6, 293);
+            this.IgdbCheckBox.Location = new System.Drawing.Point(4, 176);
+            this.IgdbCheckBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.IgdbCheckBox.Name = "IgdbCheckBox";
-            this.IgdbCheckBox.Size = new System.Drawing.Size(135, 29);
+            this.IgdbCheckBox.Size = new System.Drawing.Size(90, 19);
             this.IgdbCheckBox.TabIndex = 4;
             this.IgdbCheckBox.Text = "Enable IGDB";
             this.IgdbCheckBox.UseVisualStyleBackColor = true;
@@ -124,18 +132,20 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 222);
+            this.label3.Location = new System.Drawing.Point(4, 133);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(402, 25);
+            this.label3.Size = new System.Drawing.Size(270, 15);
             this.label3.TabIndex = 3;
             this.label3.Text = "Hint: OAuth Redirect URLs can be http://localhost";
             // 
             // linkLabel1
             // 
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(6, 256);
+            this.linkLabel1.Location = new System.Drawing.Point(4, 154);
+            this.linkLabel1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(177, 25);
+            this.linkLabel1.Size = new System.Drawing.Size(120, 15);
             this.linkLabel1.TabIndex = 2;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "https://dev.twitch.tv/";
@@ -143,17 +153,19 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 36);
+            this.label2.Location = new System.Drawing.Point(4, 22);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(443, 175);
+            this.label2.Size = new System.Drawing.Size(290, 105);
             this.label2.TabIndex = 0;
             this.label2.Text = resources.GetString("label2.Text");
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(383, 767);
+            this.button1.Location = new System.Drawing.Point(273, 424);
+            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(112, 34);
+            this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 2;
             this.button1.Text = "Save";
             this.button1.UseVisualStyleBackColor = true;
@@ -163,9 +175,11 @@
             // 
             this.groupBox2.Controls.Add(this.AtCreationCheckBox);
             this.groupBox2.Controls.Add(this.AtLoginCheckBox);
-            this.groupBox2.Location = new System.Drawing.Point(12, 564);
+            this.groupBox2.Location = new System.Drawing.Point(8, 338);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(483, 122);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox2.Size = new System.Drawing.Size(340, 73);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Auto synchronization";
@@ -175,9 +189,10 @@
             this.AtCreationCheckBox.AutoSize = true;
             this.AtCreationCheckBox.Checked = true;
             this.AtCreationCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.AtCreationCheckBox.Location = new System.Drawing.Point(6, 80);
+            this.AtCreationCheckBox.Location = new System.Drawing.Point(4, 48);
+            this.AtCreationCheckBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.AtCreationCheckBox.Name = "AtCreationCheckBox";
-            this.AtCreationCheckBox.Size = new System.Drawing.Size(254, 29);
+            this.AtCreationCheckBox.Size = new System.Drawing.Size(170, 19);
             this.AtCreationCheckBox.TabIndex = 1;
             this.AtCreationCheckBox.Text = "After creating a game entry";
             this.AtCreationCheckBox.UseVisualStyleBackColor = true;
@@ -187,27 +202,29 @@
             this.AtLoginCheckBox.AutoSize = true;
             this.AtLoginCheckBox.Checked = true;
             this.AtLoginCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.AtLoginCheckBox.Location = new System.Drawing.Point(6, 45);
+            this.AtLoginCheckBox.Location = new System.Drawing.Point(4, 27);
+            this.AtLoginCheckBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.AtLoginCheckBox.Name = "AtLoginCheckBox";
-            this.AtLoginCheckBox.Size = new System.Drawing.Size(122, 29);
+            this.AtLoginCheckBox.Size = new System.Drawing.Size(82, 19);
             this.AtLoginCheckBox.TabIndex = 0;
             this.AtLoginCheckBox.Text = "After login";
             this.AtLoginCheckBox.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(507, 813);
+            this.ClientSize = new System.Drawing.Size(359, 458);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(529, 684);
+            this.MinimumSize = new System.Drawing.Size(375, 426);
             this.Name = "SettingsForm";
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
