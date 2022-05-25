@@ -46,6 +46,7 @@
             this.TasksButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.UserSettingsButton = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -55,12 +56,12 @@
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listView1.LargeImageList = this.coverList;
-            this.listView1.Location = new System.Drawing.Point(0, 0);
+            this.listView1.Location = new System.Drawing.Point(0, 33);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
             this.listView1.ShowGroups = false;
             this.listView1.ShowItemToolTips = true;
-            this.listView1.Size = new System.Drawing.Size(1506, 766);
+            this.listView1.Size = new System.Drawing.Size(1506, 702);
             this.listView1.TabIndex = 2;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.DoubleClick += new System.EventHandler(this.listView1_DoubleClick);
@@ -83,6 +84,7 @@
             this.DownloadButton,
             this.toolStripSeparator1,
             this.SettingButton,
+            this.UserSettingsButton,
             this.toolStripSeparator2,
             this.LogoutButton,
             this.LogButton,
@@ -212,9 +214,22 @@
             // 
             // MainProgressBar
             // 
+            this.MainProgressBar.MarqueeAnimationSpeed = 20;
             this.MainProgressBar.Name = "MainProgressBar";
             this.MainProgressBar.Size = new System.Drawing.Size(150, 23);
+            this.MainProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.MainProgressBar.Visible = false;
+            // 
+            // UserSettingsButton
+            // 
+            this.UserSettingsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.UserSettingsButton.Enabled = false;
+            this.UserSettingsButton.Image = ((System.Drawing.Image)(resources.GetObject("UserSettingsButton.Image")));
+            this.UserSettingsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.UserSettingsButton.Name = "UserSettingsButton";
+            this.UserSettingsButton.Size = new System.Drawing.Size(34, 28);
+            this.UserSettingsButton.Text = "User settings";
+            this.UserSettingsButton.Click += new System.EventHandler(this.UserSettingsButton_Click);
             // 
             // GameLibrary
             // 
@@ -222,9 +237,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(1506, 766);
+            this.Controls.Add(this.listView1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.toolStrip1);
-            this.Controls.Add(this.listView1);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(1519, 797);
@@ -258,5 +273,6 @@
         private ToolStripDropDownButton TasksButton;
         private ToolStripStatusLabel StatusLabel;
         private ToolStripProgressBar MainProgressBar;
+        private ToolStripButton UserSettingsButton;
     }
 }

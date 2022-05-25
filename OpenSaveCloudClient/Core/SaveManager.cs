@@ -38,20 +38,13 @@ namespace OpenSaveCloudClient.Core
             return gameSave;
         }
 
-        /*public GameSave? GetByUuid(string uuid)
+        public void DetectChanges()
         {
-            return saves.FirstOrDefault(g => g.Uuid == uuid);
-        }
-
-        public void Set(GameSave gameSave)
-        {
-            GameSave? g = saves.FirstOrDefault(g => g.Uuid == gameSave.Uuid);
-            if (g != null)
+            foreach (GameSave gameSave in saves)
             {
-                saves.Remove(g);
+                gameSave.DetectChanges();
             }
-            saves.Add(gameSave);
-        }*/
+        }
 
         private void Load()
         {

@@ -25,45 +25,57 @@ namespace OpenSaveCloudClient
         private void LoginButton_Click(object sender, EventArgs e)
         {
             LockControls(true);
-            try
+            if (string.IsNullOrWhiteSpace(ServerTextBox.Text))
             {
-                if (string.IsNullOrWhiteSpace(ServerTextBox.Text))
+                MessageBox.Show("The server hostname or IP is empty, cannot login to an unknown server", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LockControls(false);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(UsernameTextBox.Text) || string.IsNullOrWhiteSpace(PasswordTextBox.Text))
+            {
+                MessageBox.Show("Password or username cannot be empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LockControls(false);
+                return;
+            }
+            new Thread(() =>
+            {
+                try
                 {
-                    MessageBox.Show("The server hostname or IP is empty, cannot login to an unknown server", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                if (string.IsNullOrWhiteSpace(UsernameTextBox.Text) || string.IsNullOrWhiteSpace(PasswordTextBox.Text))
-                {
-                    MessageBox.Show("Password or username cannot be empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                decimal port = PortNumericBox.Value;
-                serverConnector.BindNewServer(ServerTextBox.Text, (int)port);
-                if (serverConnector.Bind)
-                {
-                    serverConnector.Login(UsernameTextBox.Text, PasswordTextBox.Text);
-                    if (serverConnector.Connected)
+                    decimal port = PortNumericBox.Value;
+                    serverConnector.BindNewServer(ServerTextBox.Text, (int)port);
+                    if (serverConnector.Bind)
                     {
-                        Close();
+                        serverConnector.Login(UsernameTextBox.Text, PasswordTextBox.Text);
+                        if (serverConnector.Connected)
+                        {
+                            this.Invoke((MethodInvoker)delegate {
+                                Close();
+                            });
+                        }
+                        else
+                        {
+                            this.Invoke((MethodInvoker)delegate {
+                                MessageBox.Show("Wrong username or password", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                LockControls(false);
+                            });
+                        }
                     }
                     else
                     {
-                        MessageBox.Show("Wrong username or password", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        this.Invoke((MethodInvoker)delegate {
+                            MessageBox.Show("Failed to find the server, check the hostname or the port", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            LockControls(false);
+                        });
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Failed to find the server, check the hostname or the port", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.Invoke((MethodInvoker)delegate {
+                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        LockControls(false);
+                    });
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                LockControls(false);
-            }
+            }).Start();
         }
 
         private void LockControls(bool value)

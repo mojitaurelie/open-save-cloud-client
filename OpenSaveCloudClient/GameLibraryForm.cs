@@ -48,6 +48,7 @@ namespace OpenSaveCloudClient
                 }
                 else
                 {
+                    saveManager.DetectChanges();
                     this.Invoke((MethodInvoker)delegate {
                         AboutButton.Enabled = true;
                         if (_configuration.GetBoolean("synchronization.at_login", true))
@@ -316,6 +317,7 @@ namespace OpenSaveCloudClient
             SyncButton.Enabled = l;
             DownloadButton.Enabled = l;
             LogoutButton.Enabled = l;
+            UserSettingsButton.Enabled = l;
         }
 
         private void listView1_DoubleClick(object sender, EventArgs e)
@@ -372,6 +374,12 @@ namespace OpenSaveCloudClient
                     }
                 }
             }
+        }
+
+        private void UserSettingsButton_Click(object sender, EventArgs e)
+        {
+            UserForm userForm = new();
+            userForm.ShowDialog();
         }
     }
 }
