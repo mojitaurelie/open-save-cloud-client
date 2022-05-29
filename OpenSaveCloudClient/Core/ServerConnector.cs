@@ -25,6 +25,7 @@ namespace OpenSaveCloudClient.Core
         private bool bind;
         private bool connected;
         private ServerInformation? serverInformation;
+        private User? connectedUser;
 
         private LogManager logManager;
         private TaskManager taskManager;
@@ -36,6 +37,7 @@ namespace OpenSaveCloudClient.Core
         public int Port { get { return port; } }
         public bool Bind { get { return bind; } }
         public bool Connected { get { return connected; } }
+        public User? ConnectedUser { get { return connectedUser; } }
         public ServerInformation? ServerInformation { get { return serverInformation; } }
 
         private ServerConnector()
@@ -96,6 +98,7 @@ namespace OpenSaveCloudClient.Core
                     {
                         token = accessToken.Token;
                         connected = true;
+                        connectedUser = GetConnectedUserInformation();
                         SaveToConfig();
                         taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
                     }
@@ -138,6 +141,7 @@ namespace OpenSaveCloudClient.Core
                         if (accessToken != null && accessToken.Valid)
                         {
                             connected = true;
+                            connectedUser = GetConnectedUserInformation();
                             SaveToConfig();
                             taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
                         }
@@ -500,6 +504,69 @@ namespace OpenSaveCloudClient.Core
                         taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                logManager.AddError(ex);
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+            }
+            return false;
+        }
+
+        public User? GetConnectedUserInformation()
+        {
+            logManager.AddInformation("Getting user information from the server database");
+            string uuidTask = taskManager.StartTask("Getting user information", true, 1);
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                    HttpResponseMessage response = client.GetAsync(string.Format("{0}:{1}/api/v1/user/information", host, port)).Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string responseText = response.Content.ReadAsStringAsync().Result;
+                        taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+                        return JsonSerializer.Deserialize<User>(responseText);
+                    }
+                    else
+                    {
+                        logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                    }
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+                }
+            }
+            catch (Exception ex)
+            {
+                logManager.AddError(ex);
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+            }
+            return null;
+        }
+
+        public bool ChangePassword(NewPassword password)
+        {
+            logManager.AddInformation("Changing password");
+            string uuidTask = taskManager.StartTask("Changing password", true, 1);
+            try
+            {
+                HttpClient client = new HttpClient();
+                string json = JsonSerializer.Serialize(password);
+                HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = client.PostAsync(string.Format("{0}:{1}/api/v1/user/passwd", host, port), content).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    logManager.AddInformation("Password changed");
+                    string responseText = response.Content.ReadAsStringAsync().Result;
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+                    return true;
+                }
+                else
+                {
+                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                }
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
             catch (Exception ex)
             {

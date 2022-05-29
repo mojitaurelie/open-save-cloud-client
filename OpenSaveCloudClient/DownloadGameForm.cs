@@ -48,9 +48,15 @@ namespace OpenSaveCloudClient
             {
                 foreach (Game game in remoteGames)
                 {
-                    ListViewItem lvi = RemoteList.Items.Add(game.Name);
-                    lvi.SubItems.Add(Convert.ToString(game.Id));
-                    lvi.SubItems.Add("");
+                    if (game.Available)
+                    {
+                        if (!saveManager.Saves.Exists(g => g.Id == game.Id))
+                        {
+                            ListViewItem lvi = RemoteList.Items.Add(game.Name);
+                            lvi.SubItems.Add(Convert.ToString(game.Id));
+                            lvi.SubItems.Add("");
+                        }
+                    }
                 }
             }
             LockControls(false);
