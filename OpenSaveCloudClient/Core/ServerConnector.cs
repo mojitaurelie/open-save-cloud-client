@@ -544,6 +544,37 @@ namespace OpenSaveCloudClient.Core
             return null;
         }
 
+        public List<User>? GetUsers()
+        {
+            logManager.AddInformation("Getting all users from the server database");
+            string uuidTask = taskManager.StartTask("Getting users list", true, 1);
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                    HttpResponseMessage response = client.GetAsync(string.Format("{0}:{1}/api/v1/system/users", host, port)).Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string responseText = response.Content.ReadAsStringAsync().Result;
+                        taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+                        return JsonSerializer.Deserialize<List<User>>(responseText);
+                    }
+                    else
+                    {
+                        logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                    }
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+                }
+            }
+            catch (Exception ex)
+            {
+                logManager.AddError(ex);
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+            }
+            return null;
+        }
+
         public bool ChangePassword(NewPassword password)
         {
             logManager.AddInformation("Changing password");

@@ -1,4 +1,4 @@
-using OpenSaveCloudClient.Models;
+﻿using OpenSaveCloudClient.Models;
 using OpenSaveCloudClient.Core;
 using IGDB;
 using OpenSaveCloudClient.Models.Remote;
@@ -50,6 +50,7 @@ namespace OpenSaveCloudClient
                 {
                     saveManager.DetectChanges();
                     this.Invoke((MethodInvoker)delegate {
+                        SetAdminControls();
                         AboutButton.Enabled = true;
                         if (_configuration.GetBoolean("synchronization.at_login", true))
                         {
@@ -79,6 +80,11 @@ namespace OpenSaveCloudClient
                 Close();
             } else
             {
+                new Thread(() =>
+                {
+                    saveManager.DetectChanges();
+                }).Start();
+                SetAdminControls();
                 Enabled = true;
                 AboutButton.Enabled = true;
                 if (_configuration.GetBoolean("synchronization.at_login", true))
@@ -89,6 +95,20 @@ namespace OpenSaveCloudClient
                 {
                     LockCriticalControls(false);
                 }
+            }
+        }
+
+        private void SetAdminControls()
+        {
+            if (serverConnector.ConnectedUser != null && serverConnector.ConnectedUser.IsAdmin)
+            {
+                UserSettingsButton.Click += UserSettingsButton_Admin_Click;
+                UserSettingsButton.Text = "\n\nUsers";
+            }
+            else
+            {
+                UserSettingsButton.Click += UserSettingsButton_Click;
+                UserSettingsButton.Text = "\n\nMe";
             }
         }
 
@@ -207,6 +227,15 @@ namespace OpenSaveCloudClient
 
         private void LogoutButton_Click(object sender, EventArgs e)
         {
+            if (serverConnector.ConnectedUser != null && serverConnector.ConnectedUser.IsAdmin)
+            {
+                UserSettingsButton.Click -= UserSettingsButton_Admin_Click;
+            }
+            else
+            {
+                UserSettingsButton.Click -= UserSettingsButton_Click;
+            }
+            UserSettingsButton.Text = "\n\nMe";
             serverConnector.Logout();
             LockCriticalControls(true);
             AboutButton.Enabled = false;
@@ -227,26 +256,11 @@ namespace OpenSaveCloudClient
 
         private void LogManager_NewMessage(object? sender, NewMessageEventArgs e)
         {
-            int errors = logManager.Messages.Count(m => m.Severity == LogSeverity.Error);
-            int warnings = logManager.Messages.Count(m => m.Severity == LogSeverity.Warning);
-            string label = "";
-            if (errors > 0)
-            {
-                label = String.Format("({0} errors)", errors);
-            }
-            if (warnings > 0)
-            {
-                if (errors > 0)
-                {
-                    label += " ";
-                }
-                label = String.Format("({0} warnings)", warnings);
-            }
-            if (errors > 0 || warnings > 0)
+            bool errors = logManager.Messages.Exists(m => m.Severity != LogSeverity.Information);
+            if (errors)
             {
                 this.Invoke((MethodInvoker)delegate {
-                    LogButton.Text = label;
-                    LogButton.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
+                    LogButton.Text = "\n\nLog";
                 });
             }
         }
@@ -254,8 +268,7 @@ namespace OpenSaveCloudClient
         private void LogManager_LogCleared(object? sender, ClearEventArgs e)
         {
             this.Invoke((MethodInvoker)delegate {
-                LogButton.Text = "Show logs";
-                LogButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
+                LogButton.Text = "\n\nLog";
             });
         }
 
@@ -376,10 +389,16 @@ namespace OpenSaveCloudClient
             }
         }
 
-        private void UserSettingsButton_Click(object sender, EventArgs e)
+        private void UserSettingsButton_Click(object? sender, EventArgs e)
         {
-            UserForm userForm = new();
-            userForm.ShowDialog();
+            UserForm form = new();
+            form.ShowDialog();
+        }
+
+        private void UserSettingsButton_Admin_Click(object? sender, EventArgs e)
+        {
+            UserManagementForm form = new();
+            form.ShowDialog();
         }
     }
 }

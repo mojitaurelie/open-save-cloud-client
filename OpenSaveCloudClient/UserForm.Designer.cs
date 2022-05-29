@@ -79,7 +79,7 @@
             this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox1.Size = new System.Drawing.Size(362, 150);
+            this.groupBox1.Size = new System.Drawing.Size(362, 158);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Change password";
@@ -88,7 +88,7 @@
             // 
             this.SavePasswordButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.SavePasswordButton.Enabled = false;
-            this.SavePasswordButton.Location = new System.Drawing.Point(283, 123);
+            this.SavePasswordButton.Location = new System.Drawing.Point(284, 125);
             this.SavePasswordButton.Margin = new System.Windows.Forms.Padding(2);
             this.SavePasswordButton.Name = "SavePasswordButton";
             this.SavePasswordButton.Size = new System.Drawing.Size(75, 23);
@@ -110,7 +110,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(4, 31);
+            this.label2.Location = new System.Drawing.Point(4, 25);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(84, 15);
@@ -133,7 +133,7 @@
             // 
             this.NewPasswordBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.NewPasswordBox.Location = new System.Drawing.Point(4, 49);
+            this.NewPasswordBox.Location = new System.Drawing.Point(3, 42);
             this.NewPasswordBox.Margin = new System.Windows.Forms.Padding(2);
             this.NewPasswordBox.Name = "NewPasswordBox";
             this.NewPasswordBox.Size = new System.Drawing.Size(355, 23);
@@ -163,8 +163,12 @@
             this.Controls.Add(this.label1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
+            this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(398, 331);
+            this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(398, 331);
             this.Name = "UserForm";
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "User information";
             this.Load += new System.EventHandler(this.UserForm_Load);
