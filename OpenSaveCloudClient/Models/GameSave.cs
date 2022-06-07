@@ -16,7 +16,7 @@ namespace OpenSaveCloudClient.Models
         private long id;
         private string uuid;
         private readonly string name;
-        private readonly string folderPath;
+        private string folderPath;
         private readonly string description;
         private string hash;
         private string currentHash;
@@ -28,7 +28,7 @@ namespace OpenSaveCloudClient.Models
         public string Uuid { get { return uuid; } }
         public string Name { get { return name; } }
         public string Description { get { return description; } }
-        public string FolderPath { get { return folderPath; } }
+        public string FolderPath { get { return folderPath; } set { folderPath = value; } }
         public string Hash { get { return hash; } }
         public string CurrentHash { get { return currentHash; } }
         public string? CoverPath { get { return coverPath; } }   
@@ -109,6 +109,11 @@ namespace OpenSaveCloudClient.Models
         public void UpdateHash()
         {
             hash = currentHash;
+        }
+
+        public bool PathExist()
+        {
+            return Directory.Exists(FolderPath);
         }
     }
 }

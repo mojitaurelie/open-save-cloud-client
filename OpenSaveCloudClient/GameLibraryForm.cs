@@ -39,6 +39,9 @@ namespace OpenSaveCloudClient
             logManager.NewMessage += LogManager_NewMessage;
             new Thread(() =>
             {
+                this.Invoke((MethodInvoker)delegate {
+                    CheckPaths();
+                });
                 serverConnector.Reconnect();
                 if (!serverConnector.Connected)
                 {
@@ -48,7 +51,14 @@ namespace OpenSaveCloudClient
                 }
                 else
                 {
-                    saveManager.DetectChanges();
+                    try
+                    {
+                        saveManager.DetectChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        logManager.AddError(e);
+                    }
                     this.Invoke((MethodInvoker)delegate {
                         SetAdminControls();
                         AboutButton.Enabled = true;
@@ -62,6 +72,36 @@ namespace OpenSaveCloudClient
                     });
                 }
             }).Start();
+        }
+
+        private void CheckPaths()
+        {
+            List<GameSave> toDelete = new();
+            foreach (GameSave save in saveManager.Saves)
+            {
+                if (!save.PathExist())
+                {
+                    string message = String.Format("The path of '{0}' is not found\n\n{1}\n\nDo you want to locate the new path?", save.Name, save.FolderPath);
+                    DialogResult res = MessageBox.Show(message, "Missing path", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                    if (res == DialogResult.Yes)
+                    {
+                        FolderBrowserDialog dialog = new();
+                        if (dialog.ShowDialog() == DialogResult.OK)
+                        {
+                            save.FolderPath = dialog.SelectedPath;
+                        }
+                    } 
+                    else
+                    {
+                        toDelete.Add(save);
+                    }
+                }
+            }
+            foreach (GameSave save in toDelete)
+            {
+                saveManager.Saves.Remove(save);
+            }
+            saveManager.Save();
             RefreshList();
         }
 
@@ -82,7 +122,14 @@ namespace OpenSaveCloudClient
             {
                 new Thread(() =>
                 {
-                    saveManager.DetectChanges();
+                    try
+                    {
+                        saveManager.DetectChanges();
+                    }
+                    catch (Exception e) 
+                    {
+                        logManager.AddError(e);
+                    }
                 }).Start();
                 SetAdminControls();
                 Enabled = true;
