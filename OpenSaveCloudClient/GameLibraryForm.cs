@@ -51,13 +51,16 @@ namespace OpenSaveCloudClient
                 }
                 else
                 {
+                    string taskUuid = StartTask("Detecting changes...", true, 1);
                     try
                     {
                         saveManager.DetectChanges();
+                        SetTaskEnded(taskUuid);
                     }
                     catch (Exception e)
                     {
                         logManager.AddError(e);
+                        SetTaskFailed(taskUuid);
                     }
                     this.Invoke((MethodInvoker)delegate {
                         SetAdminControls();
@@ -122,13 +125,16 @@ namespace OpenSaveCloudClient
             {
                 new Thread(() =>
                 {
+                    string taskUuid = StartTask("Detecting changes...", true, 1);
                     try
                     {
                         saveManager.DetectChanges();
+                        SetTaskEnded(taskUuid);
                     }
-                    catch (Exception e) 
+                    catch (Exception e)
                     {
                         logManager.AddError(e);
+                        SetTaskFailed(taskUuid);
                     }
                 }).Start();
                 SetAdminControls();
