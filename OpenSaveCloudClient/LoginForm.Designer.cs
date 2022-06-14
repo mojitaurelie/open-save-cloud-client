@@ -40,6 +40,7 @@
             this.PortNumericBox = new System.Windows.Forms.NumericUpDown();
             this.LoginButton = new System.Windows.Forms.Button();
             this.AboutButton = new System.Windows.Forms.PictureBox();
+            this.sslCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PortNumericBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.AboutButton)).BeginInit();
@@ -58,10 +59,10 @@
             // 
             // ServerTextBox
             // 
-            this.ServerTextBox.Location = new System.Drawing.Point(297, 192);
+            this.ServerTextBox.Location = new System.Drawing.Point(297, 187);
             this.ServerTextBox.Name = "ServerTextBox";
             this.ServerTextBox.PlaceholderText = "myserver.com";
-            this.ServerTextBox.Size = new System.Drawing.Size(412, 31);
+            this.ServerTextBox.Size = new System.Drawing.Size(311, 31);
             this.ServerTextBox.TabIndex = 1;
             // 
             // UsernameTextBox
@@ -75,7 +76,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label1.Location = new System.Drawing.Point(297, 166);
+            this.label1.Location = new System.Drawing.Point(297, 161);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(61, 25);
             this.label1.TabIndex = 0;
@@ -113,7 +114,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label4.Location = new System.Drawing.Point(716, 166);
+            this.label4.Location = new System.Drawing.Point(615, 161);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(44, 25);
             this.label4.TabIndex = 0;
@@ -122,7 +123,7 @@
             // PortNumericBox
             // 
             this.PortNumericBox.InterceptArrowKeys = false;
-            this.PortNumericBox.Location = new System.Drawing.Point(716, 192);
+            this.PortNumericBox.Location = new System.Drawing.Point(615, 187);
             this.PortNumericBox.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -164,12 +165,25 @@
             this.AboutButton.TabStop = false;
             this.AboutButton.Click += new System.EventHandler(this.AboutButton_Click);
             // 
+            // sslCheckBox
+            // 
+            this.sslCheckBox.AutoSize = true;
+            this.sslCheckBox.Checked = true;
+            this.sslCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.sslCheckBox.Location = new System.Drawing.Point(743, 189);
+            this.sslCheckBox.Name = "sslCheckBox";
+            this.sslCheckBox.Size = new System.Drawing.Size(100, 29);
+            this.sslCheckBox.TabIndex = 7;
+            this.sslCheckBox.Text = "Use SSL";
+            this.sslCheckBox.UseVisualStyleBackColor = true;
+            // 
             // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(1112, 447);
+            this.Controls.Add(this.sslCheckBox);
             this.Controls.Add(this.AboutButton);
             this.Controls.Add(this.LoginButton);
             this.Controls.Add(this.PortNumericBox);
@@ -212,5 +226,6 @@
         private NumericUpDown PortNumericBox;
         private Button LoginButton;
         private PictureBox AboutButton;
+        private CheckBox sslCheckBox;
     }
 }

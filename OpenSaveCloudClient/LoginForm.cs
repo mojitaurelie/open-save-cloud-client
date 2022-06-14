@@ -42,7 +42,20 @@ namespace OpenSaveCloudClient
                 try
                 {
                     decimal port = PortNumericBox.Value;
-                    serverConnector.BindNewServer(ServerTextBox.Text, (int)port);
+                    string host = ServerTextBox.Text;
+                    if (host.StartsWith("https://"))
+                    {
+                        sslCheckBox.Checked = true;
+                    }
+                    else if (host.StartsWith("http://"))
+                    {
+                        sslCheckBox.Checked = false;
+                    }
+                    else
+                    {
+                        host = (sslCheckBox.Checked ? "https://" : "http://") + host;
+                    }
+                    serverConnector.BindNewServer(host, (int)port);
                     if (serverConnector.Bind)
                     {
                         serverConnector.Login(UsernameTextBox.Text, PasswordTextBox.Text);
@@ -86,6 +99,7 @@ namespace OpenSaveCloudClient
             UsernameTextBox.Enabled = value;
             PasswordTextBox.Enabled = value;
             LoginButton.Enabled = value;
+            sslCheckBox.Enabled = value;
         }
 
         private void AboutButton_Click(object sender, EventArgs e)

@@ -27,10 +27,10 @@ namespace OpenSaveCloudClient.Core
         private ServerInformation? serverInformation;
         private User? connectedUser;
 
-        private LogManager logManager;
-        private TaskManager taskManager;
-        private Configuration configuration;
-        private SaveManager saveManager;
+        private readonly LogManager logManager;
+        private readonly TaskManager taskManager;
+        private readonly Configuration configuration;
+        private readonly SaveManager saveManager;
 
 
         public string? Host { get { return host; } }
@@ -65,10 +65,6 @@ namespace OpenSaveCloudClient.Core
         public void BindNewServer(string host, int port)
         {
             Logout();
-            if (!host.StartsWith("http://") && !host.StartsWith("https://"))
-            {
-                host = "http://" + host;
-            }
             logManager.AddInformation(String.Format("Binding server {0}:{1}", host, port));
             this.host = host;
             this.port = port;
@@ -86,7 +82,7 @@ namespace OpenSaveCloudClient.Core
             string uuidTask = taskManager.StartTask("Login to the server", true, 1);
             try
             {
-                HttpClient client = new HttpClient();
+                using HttpClient client = new();
                 string json = JsonSerializer.Serialize(new Credential { Username = username, Password = password });
                 HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
                 HttpResponseMessage response = client.PostAsync(string.Format("{0}:{1}/api/v1/login", host, port), content).Result;
@@ -130,7 +126,7 @@ namespace OpenSaveCloudClient.Core
                 if (ReloadFromConfiguration())
                 {
                     uuidTask = taskManager.StartTask("Login to the server", true, 1);
-                    HttpClient client = new HttpClient();
+                    using HttpClient client = new();
                     string json = JsonSerializer.Serialize(new AccessToken { Token = token });
                     HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
                     HttpResponseMessage response = client.PostAsync(string.Format("{0}:{1}/api/v1/check/token", host, port), content).Result;
@@ -194,7 +190,7 @@ namespace OpenSaveCloudClient.Core
             string uuidTask = taskManager.StartTask("Creating game to server database", true, 1);
             try
             {
-                HttpClient client = new HttpClient();
+                using HttpClient client = new();
                 string json = JsonSerializer.Serialize(new NewGameInfo { Name = name });
                 HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
                 client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
@@ -358,22 +354,20 @@ namespace OpenSaveCloudClient.Core
             string uuidTask = taskManager.StartTask("Getting game information", true, 1);
             try
             {
-                using (HttpClient client = new HttpClient())
+                using HttpClient client = new();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = client.GetAsync(string.Format("{0}:{1}/api/v1/game/info/{2}", host, port, gameId)).Result;
+                if (response.IsSuccessStatusCode)
                 {
-                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                    HttpResponseMessage response = client.GetAsync(string.Format("{0}:{1}/api/v1/game/info/{2}", host, port, gameId)).Result;
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseText = response.Content.ReadAsStringAsync().Result;
-                        taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
-                        return JsonSerializer.Deserialize<Game>(responseText);
-                    }
-                    else
-                    {
-                        logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
-                    }
-                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+                    string responseText = response.Content.ReadAsStringAsync().Result;
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+                    return JsonSerializer.Deserialize<Game>(responseText);
                 }
+                else
+                {
+                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                }
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
             catch (Exception ex)
             {
@@ -394,22 +388,20 @@ namespace OpenSaveCloudClient.Core
             string uuidTask = taskManager.StartTask("Getting game information", true, 1);
             try
             {
-                using (HttpClient client = new HttpClient())
+                using HttpClient client = new();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = client.GetAsync(string.Format("{0}:{1}/api/v1/game/all", host, port)).Result;
+                if (response.IsSuccessStatusCode)
                 {
-                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                    HttpResponseMessage response = client.GetAsync(string.Format("{0}:{1}/api/v1/game/all", host, port)).Result;
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseText = response.Content.ReadAsStringAsync().Result;
-                        taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
-                        return JsonSerializer.Deserialize<List<Game>>(responseText);
-                    }
-                    else
-                    {
-                        logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
-                    }
-                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+                    string responseText = response.Content.ReadAsStringAsync().Result;
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+                    return JsonSerializer.Deserialize<List<Game>>(responseText);
                 }
+                else
+                {
+                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                }
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
             catch (Exception ex)
             {
@@ -437,23 +429,21 @@ namespace OpenSaveCloudClient.Core
                 fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
                 multipartFormContent.Add(fileStreamContent, name: "file", fileName: "file.bin");
 
-                using (HttpClient client = new HttpClient())
+                using HttpClient client = new();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                client.DefaultRequestHeaders.Add("X-Upload-Key", uploadToken);
+                client.DefaultRequestHeaders.Add("X-Game-Save-Hash", newHash);
+                HttpResponseMessage response = client.PostAsync(string.Format("{0}:{1}/api/v1/game/upload", host, port), multipartFormContent).Result;
+                if (response.IsSuccessStatusCode)
                 {
-                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                    client.DefaultRequestHeaders.Add("X-Upload-Key", uploadToken);
-                    client.DefaultRequestHeaders.Add("X-Game-Save-Hash", newHash);
-                    HttpResponseMessage response = client.PostAsync(string.Format("{0}:{1}/api/v1/game/upload", host, port), multipartFormContent).Result;
-                    if (response.IsSuccessStatusCode)
-                    {
-                        taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
-                        return true;
-                    }
-                    else
-                    {
-                        logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
-                    }
-                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+                    return true;
                 }
+                else
+                {
+                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                }
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
             catch (Exception ex)
             {
@@ -479,30 +469,28 @@ namespace OpenSaveCloudClient.Core
             string uuidTask = taskManager.StartTask("Downloading", true, 1);
             try
             {
-                using (HttpClient client = new HttpClient())
+                using HttpClient client = new();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                client.DefaultRequestHeaders.Add("X-Upload-Key", uploadToken);
+                HttpResponseMessage response = client.GetAsync(string.Format("{0}:{1}/api/v1/game/download", host, port)).Result;
+                if (response.IsSuccessStatusCode)
                 {
-                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                    client.DefaultRequestHeaders.Add("X-Upload-Key", uploadToken);
-                    HttpResponseMessage response = client.GetAsync(string.Format("{0}:{1}/api/v1/game/download", host, port)).Result;
-                    if (response.IsSuccessStatusCode)
+                    using (var fs = new FileStream(filePath, FileMode.Create))
                     {
-                        using (var fs = new FileStream(filePath, FileMode.Create))
-                        {
-                            await response.Content.CopyToAsync(fs);
-                        }
-                        if (Directory.Exists(unzipPath))
-                        {
-                            Directory.Delete(unzipPath, true);
-                        }
-                        ZipFile.ExtractToDirectory(filePath, unzipPath);
-                        taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
-                        return true;
+                        await response.Content.CopyToAsync(fs);
                     }
-                    else
+                    if (Directory.Exists(unzipPath))
                     {
-                        logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
-                        taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+                        Directory.Delete(unzipPath, true);
                     }
+                    ZipFile.ExtractToDirectory(filePath, unzipPath);
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+                    return true;
+                }
+                else
+                {
+                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
                 }
             }
             catch (Exception ex)
@@ -519,22 +507,20 @@ namespace OpenSaveCloudClient.Core
             string uuidTask = taskManager.StartTask("Getting user information", true, 1);
             try
             {
-                using (HttpClient client = new HttpClient())
+                using HttpClient client = new();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = client.GetAsync(string.Format("{0}:{1}/api/v1/user/information", host, port)).Result;
+                if (response.IsSuccessStatusCode)
                 {
-                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                    HttpResponseMessage response = client.GetAsync(string.Format("{0}:{1}/api/v1/user/information", host, port)).Result;
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseText = response.Content.ReadAsStringAsync().Result;
-                        taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
-                        return JsonSerializer.Deserialize<User>(responseText);
-                    }
-                    else
-                    {
-                        logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
-                    }
-                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+                    string responseText = response.Content.ReadAsStringAsync().Result;
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+                    return JsonSerializer.Deserialize<User>(responseText);
                 }
+                else
+                {
+                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                }
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
             catch (Exception ex)
             {
@@ -550,22 +536,140 @@ namespace OpenSaveCloudClient.Core
             string uuidTask = taskManager.StartTask("Getting users list", true, 1);
             try
             {
-                using (HttpClient client = new HttpClient())
+                using HttpClient client = new();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = client.GetAsync(string.Format("{0}:{1}/api/v1/admin/users", host, port)).Result;
+                if (response.IsSuccessStatusCode)
                 {
-                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                    HttpResponseMessage response = client.GetAsync(string.Format("{0}:{1}/api/v1/system/users", host, port)).Result;
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseText = response.Content.ReadAsStringAsync().Result;
-                        taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
-                        return JsonSerializer.Deserialize<List<User>>(responseText);
-                    }
-                    else
-                    {
-                        logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
-                    }
-                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+                    string responseText = response.Content.ReadAsStringAsync().Result;
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+                    return JsonSerializer.Deserialize<List<User>>(responseText);
                 }
+                else
+                {
+                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                }
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+            }
+            catch (Exception ex)
+            {
+                logManager.AddError(ex);
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+            }
+            return null;
+        }
+
+        public User? CreateUser(Registration registration)
+        {
+            logManager.AddInformation("Creation of the new user");
+            string uuidTask = taskManager.StartTask("Registration of the user", true, 1);
+            try
+            {
+                HttpClient client = new();
+                string json = JsonSerializer.Serialize(registration);
+                HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = client.PostAsync(string.Format("{0}:{1}/api/v1/admin/user", host, port), content).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    logManager.AddInformation("Password changed");
+                    string responseText = response.Content.ReadAsStringAsync().Result;
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+                    return JsonSerializer.Deserialize<User>(responseText);
+                }
+                else
+                {
+                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                }
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+            }
+            catch (Exception ex)
+            {
+                logManager.AddError(ex);
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+            }
+            return null;
+        }
+
+        public User? GetUser(long userId)
+        {
+            logManager.AddInformation("Getting user information from the server database");
+            string uuidTask = taskManager.StartTask("Getting user information", true, 1);
+            try
+            {
+                using HttpClient client = new();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = client.GetAsync(string.Format("{0}:{1}/api/v1/admin/user/{2}", host, port, userId)).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseText = response.Content.ReadAsStringAsync().Result;
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+                    return JsonSerializer.Deserialize<User>(responseText);
+                }
+                else
+                {
+                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                }
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+            }
+            catch (Exception ex)
+            {
+                logManager.AddError(ex);
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+            }
+            return null;
+        }
+
+        public User? SetUserAdmin(long userId, bool setAdmin)
+        {
+            logManager.AddInformation("Getting user information from the server database");
+            string uuidTask = taskManager.StartTask("Getting user information", true, 1);
+            string role = setAdmin ? "admin" : "user";
+            try
+            {
+                using HttpClient client = new();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = client.GetAsync(string.Format("{0}:{1}/api/v1/admin/user/role/{2}/{3}", host, port, role, userId)).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseText = response.Content.ReadAsStringAsync().Result;
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+                    return JsonSerializer.Deserialize<User>(responseText);
+                }
+                else
+                {
+                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                }
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+            }
+            catch (Exception ex)
+            {
+                logManager.AddError(ex);
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+            }
+            return null;
+        }
+
+        public User? DeleteUser(long userId)
+        {
+            logManager.AddInformation("Delete a user and all his datas");
+            string uuidTask = taskManager.StartTask("Deleting user", true, 1);
+            try
+            {
+                using HttpClient client = new();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = client.DeleteAsync(string.Format("{0}:{1}/api/v1/admin/user/{2}", host, port, userId)).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseText = response.Content.ReadAsStringAsync().Result;
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+                    return JsonSerializer.Deserialize<User>(responseText);
+                }
+                else
+                {
+                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                }
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
             catch (Exception ex)
             {
@@ -581,11 +685,43 @@ namespace OpenSaveCloudClient.Core
             string uuidTask = taskManager.StartTask("Changing password", true, 1);
             try
             {
-                HttpClient client = new HttpClient();
+                HttpClient client = new();
                 string json = JsonSerializer.Serialize(password);
                 HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
                 client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 HttpResponseMessage response = client.PostAsync(string.Format("{0}:{1}/api/v1/user/passwd", host, port), content).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    logManager.AddInformation("Password changed");
+                    string responseText = response.Content.ReadAsStringAsync().Result;
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+                    return true;
+                }
+                else
+                {
+                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                }
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+            }
+            catch (Exception ex)
+            {
+                logManager.AddError(ex);
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+            }
+            return false;
+        }
+
+        public bool ChangePassword(int userId, NewPassword password)
+        {
+            logManager.AddInformation(string.Format("Changing password of user {0}", userId));
+            string uuidTask = taskManager.StartTask("Changing password", true, 1);
+            try
+            {
+                HttpClient client = new();
+                string json = JsonSerializer.Serialize(password);
+                HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = client.PostAsync(string.Format("{0}:{1}/api/v1/admin/user/passwd/{2}", host, port, userId), content).Result;
                 if (response.IsSuccessStatusCode)
                 {
                     logManager.AddInformation("Password changed");
@@ -640,25 +776,23 @@ namespace OpenSaveCloudClient.Core
             string uuidTask = taskManager.StartTask("Locking game", true, 1);
             try
             {
-                using (HttpClient client = new HttpClient())
+                using HttpClient client = new();
+                string json = JsonSerializer.Serialize(new UploadGameInfo { GameId = gameId });
+                HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = client.PostAsync(string.Format("{0}:{1}/api/v1/game/upload/init", host, port), content).Result;
+                if (response.IsSuccessStatusCode)
                 {
-                    string json = JsonSerializer.Serialize(new UploadGameInfo { GameId = gameId });
-                    HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
-                    client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                    HttpResponseMessage response = client.PostAsync(string.Format("{0}:{1}/api/v1/game/upload/init", host, port), content).Result;
-                    if (response.IsSuccessStatusCode)
-                    {
-                        logManager.AddInformation("Game locked");
-                        string responseText = response.Content.ReadAsStringAsync().Result;
-                        taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
-                        return JsonSerializer.Deserialize<GameUploadToken>(responseText);
-                    }
-                    else
-                    {
-                        logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
-                    }
-                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
-                }  
+                    logManager.AddInformation("Game locked");
+                    string responseText = response.Content.ReadAsStringAsync().Result;
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+                    return JsonSerializer.Deserialize<GameUploadToken>(responseText);
+                }
+                else
+                {
+                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                }
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
             catch (Exception ex)
             {

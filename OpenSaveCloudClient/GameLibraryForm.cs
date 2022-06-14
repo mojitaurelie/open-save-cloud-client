@@ -111,7 +111,7 @@ namespace OpenSaveCloudClient
         private void ShowLoginForm()
         {
             Enabled = false;
-            LoginForm loginForm = new LoginForm();
+            LoginForm loginForm = new();
             loginForm.FormClosed += LoginForm_Close;
             loginForm.Show();
         }
