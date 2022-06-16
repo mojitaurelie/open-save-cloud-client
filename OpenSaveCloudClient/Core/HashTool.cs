@@ -79,5 +79,16 @@ namespace OpenSaveCloudClient.Core
             return sha.ComputeHash(inputStream);
         }
 
+        public static string? HashFile(string path)
+        {
+            FileInfo fileInfo = new(path);
+            byte[]? hash = HashFile(fileInfo);
+            if (hash == null)
+            {
+                throw new InvalidOperationException("HashFile: file to get hash");
+            }
+            return BitConverter.ToString(hash).Replace("-", "");
+        }
+
     }
 }

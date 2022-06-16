@@ -424,6 +424,13 @@ namespace OpenSaveCloudClient.Core
             FileStream stream = File.OpenRead(filePath);
             try
             {
+                string? hash = HashTool.HashFile(filePath);
+                if (hash == null)
+                {
+                    logManager.AddError("Failed to get hash of archive");
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+                    return false;
+                }
                 MultipartFormDataContent multipartFormContent = new();
                 var fileStreamContent = new StreamContent(stream);
                 fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
@@ -433,6 +440,7 @@ namespace OpenSaveCloudClient.Core
                 client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 client.DefaultRequestHeaders.Add("X-Upload-Key", uploadToken);
                 client.DefaultRequestHeaders.Add("X-Game-Save-Hash", newHash);
+                client.DefaultRequestHeaders.Add("X-Hash", hash);
                 HttpResponseMessage response = client.PostAsync(string.Format("{0}:{1}/api/v1/game/upload", host, port), multipartFormContent).Result;
                 if (response.IsSuccessStatusCode)
                 {
@@ -479,13 +487,34 @@ namespace OpenSaveCloudClient.Core
                     {
                         await response.Content.CopyToAsync(fs);
                     }
-                    if (Directory.Exists(unzipPath))
+
+                    if (response.Headers.TryGetValues("X-Hash", out IEnumerable<string>? hashValue))
                     {
-                        Directory.Delete(unzipPath, true);
+                        if (hashValue != null)
+                        {
+                            string hash = hashValue.First();
+                            string? localHash = HashTool.HashFile(filePath);
+                            if (localHash != null)
+                            {
+                                if (hash != localHash)
+                                {
+                                    logManager.AddError("The hash does not match");
+                                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+                                    return false;
+                                }
+                                if (Directory.Exists(unzipPath))
+                                {
+                                    Directory.Delete(unzipPath, true);
+                                }
+                                ZipFile.ExtractToDirectory(filePath, unzipPath);
+                                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+                                return true;
+                            }
+                        }
                     }
-                    ZipFile.ExtractToDirectory(filePath, unzipPath);
-                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
-                    return true;
+                    logManager.AddError("Server does not send the hash of the archive");
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+                    return false;
                 }
                 else
                 {

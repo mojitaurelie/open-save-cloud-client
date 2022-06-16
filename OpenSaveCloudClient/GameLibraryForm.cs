@@ -55,6 +55,18 @@ namespace OpenSaveCloudClient
                     try
                     {
                         saveManager.DetectChanges();
+                        this.Invoke((MethodInvoker)delegate {
+                            SetAdminControls();
+                            AboutButton.Enabled = true;
+                            if (_configuration.GetBoolean("synchronization.at_login", true))
+                            {
+                                SyncButton_Click(sender, e);
+                            }
+                            else
+                            {
+                                LockCriticalControls(false);
+                            }
+                        });
                         SetTaskEnded(taskUuid);
                     }
                     catch (Exception e)
@@ -62,17 +74,6 @@ namespace OpenSaveCloudClient
                         logManager.AddError(e);
                         SetTaskFailed(taskUuid);
                     }
-                    this.Invoke((MethodInvoker)delegate {
-                        SetAdminControls();
-                        AboutButton.Enabled = true;
-                        if (_configuration.GetBoolean("synchronization.at_login", true))
-                        {
-                            SyncButton_Click(sender, e);
-                        } else
-                        {
-                            LockCriticalControls(false);
-                        }
-                    });
                 }
             }).Start();
         }
@@ -452,6 +453,19 @@ namespace OpenSaveCloudClient
         {
             UserManagementForm form = new();
             form.ShowDialog();
+        }
+
+        private void GameLibrary_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            bool busy = (taskManager.TasksInformation.Count(ti => ti.Status == AsyncTaskStatus.Running) > 0);
+            if (busy)
+            {
+                logManager.Cleared -= LogManager_LogCleared;
+                logManager.NewMessage -= LogManager_NewMessage;
+                WaitingForm form = new();
+                form.ShowDialog();
+                taskManager.TaskChanged -= taskManager_TaskChanged;
+            }
         }
     }
 }

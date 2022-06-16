@@ -56,13 +56,12 @@
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listView1.LargeImageList = this.coverList;
-            this.listView1.Location = new System.Drawing.Point(0, 80);
-            this.listView1.Margin = new System.Windows.Forms.Padding(2);
+            this.listView1.Location = new System.Drawing.Point(0, 120);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
             this.listView1.ShowGroups = false;
             this.listView1.ShowItemToolTips = true;
-            this.listView1.Size = new System.Drawing.Size(1004, 406);
+            this.listView1.Size = new System.Drawing.Size(1506, 610);
             this.listView1.TabIndex = 2;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.DoubleClick += new System.EventHandler(this.listView1_DoubleClick);
@@ -81,9 +80,10 @@
             this.TasksButton,
             this.StatusLabel,
             this.MainProgressBar});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 486);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 730);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1004, 25);
+            this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
+            this.statusStrip1.Size = new System.Drawing.Size(1506, 36);
             this.statusStrip1.TabIndex = 4;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -94,7 +94,7 @@
             this.TasksButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.TasksButton.Name = "TasksButton";
             this.TasksButton.ShowDropDownArrow = false;
-            this.TasksButton.Size = new System.Drawing.Size(32, 23);
+            this.TasksButton.Size = new System.Drawing.Size(46, 33);
             this.TasksButton.Text = "";
             this.TasksButton.Click += new System.EventHandler(this.toolStripDropDownButton1_Click);
             // 
@@ -102,13 +102,13 @@
             // 
             this.StatusLabel.BackColor = System.Drawing.Color.Transparent;
             this.StatusLabel.Name = "StatusLabel";
-            this.StatusLabel.Size = new System.Drawing.Size(0, 20);
+            this.StatusLabel.Size = new System.Drawing.Size(0, 29);
             // 
             // MainProgressBar
             // 
             this.MainProgressBar.MarqueeAnimationSpeed = 20;
             this.MainProgressBar.Name = "MainProgressBar";
-            this.MainProgressBar.Size = new System.Drawing.Size(100, 19);
+            this.MainProgressBar.Size = new System.Drawing.Size(150, 28);
             this.MainProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.MainProgressBar.Visible = false;
             // 
@@ -126,10 +126,11 @@
             this.panel1.Controls.Add(this.AddButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.MaximumSize = new System.Drawing.Size(0, 80);
-            this.panel1.MinimumSize = new System.Drawing.Size(0, 80);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel1.MaximumSize = new System.Drawing.Size(0, 120);
+            this.panel1.MinimumSize = new System.Drawing.Size(0, 120);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1004, 80);
+            this.panel1.Size = new System.Drawing.Size(1506, 120);
             this.panel1.TabIndex = 5;
             // 
             // AboutButton
@@ -138,9 +139,10 @@
             this.AboutButton.FlatAppearance.BorderSize = 0;
             this.AboutButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AboutButton.Font = new System.Drawing.Font("Segoe MDL2 Assets", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.AboutButton.Location = new System.Drawing.Point(505, 3);
+            this.AboutButton.Location = new System.Drawing.Point(758, 4);
+            this.AboutButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.AboutButton.Name = "AboutButton";
-            this.AboutButton.Size = new System.Drawing.Size(57, 74);
+            this.AboutButton.Size = new System.Drawing.Size(86, 111);
             this.AboutButton.TabIndex = 9;
             this.AboutButton.Text = "\r\n\r\nAbout";
             this.AboutButton.UseVisualStyleBackColor = true;
@@ -151,9 +153,10 @@
             this.LogButton.FlatAppearance.BorderSize = 0;
             this.LogButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.LogButton.Font = new System.Drawing.Font("Segoe MDL2 Assets", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.LogButton.Location = new System.Drawing.Point(442, 3);
+            this.LogButton.Location = new System.Drawing.Point(663, 4);
+            this.LogButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.LogButton.Name = "LogButton";
-            this.LogButton.Size = new System.Drawing.Size(57, 74);
+            this.LogButton.Size = new System.Drawing.Size(86, 111);
             this.LogButton.TabIndex = 8;
             this.LogButton.Text = "\r\n\r\nLog";
             this.LogButton.UseVisualStyleBackColor = true;
@@ -165,9 +168,10 @@
             this.LogoutButton.FlatAppearance.BorderSize = 0;
             this.LogoutButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.LogoutButton.Font = new System.Drawing.Font("Segoe MDL2 Assets", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.LogoutButton.Location = new System.Drawing.Point(379, 3);
+            this.LogoutButton.Location = new System.Drawing.Point(568, 4);
+            this.LogoutButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.LogoutButton.Name = "LogoutButton";
-            this.LogoutButton.Size = new System.Drawing.Size(57, 74);
+            this.LogoutButton.Size = new System.Drawing.Size(86, 111);
             this.LogoutButton.TabIndex = 7;
             this.LogoutButton.Text = "\r\n\r\nLogout";
             this.LogoutButton.UseVisualStyleBackColor = true;
@@ -178,9 +182,10 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label2.ForeColor = System.Drawing.Color.LightGray;
-            this.label2.Location = new System.Drawing.Point(353, 22);
+            this.label2.Location = new System.Drawing.Point(530, 33);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(20, 32);
+            this.label2.Size = new System.Drawing.Size(29, 48);
             this.label2.TabIndex = 6;
             this.label2.Text = "|";
             // 
@@ -190,9 +195,10 @@
             this.UserSettingsButton.FlatAppearance.BorderSize = 0;
             this.UserSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.UserSettingsButton.Font = new System.Drawing.Font("Segoe MDL2 Assets", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.UserSettingsButton.Location = new System.Drawing.Point(290, 3);
+            this.UserSettingsButton.Location = new System.Drawing.Point(435, 4);
+            this.UserSettingsButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.UserSettingsButton.Name = "UserSettingsButton";
-            this.UserSettingsButton.Size = new System.Drawing.Size(57, 74);
+            this.UserSettingsButton.Size = new System.Drawing.Size(86, 111);
             this.UserSettingsButton.TabIndex = 5;
             this.UserSettingsButton.Text = "\r\n\r\nMe";
             this.UserSettingsButton.UseVisualStyleBackColor = true;
@@ -202,9 +208,10 @@
             this.SettingsButton.FlatAppearance.BorderSize = 0;
             this.SettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SettingsButton.Font = new System.Drawing.Font("Segoe MDL2 Assets", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.SettingsButton.Location = new System.Drawing.Point(227, 3);
+            this.SettingsButton.Location = new System.Drawing.Point(340, 4);
+            this.SettingsButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.SettingsButton.Name = "SettingsButton";
-            this.SettingsButton.Size = new System.Drawing.Size(57, 74);
+            this.SettingsButton.Size = new System.Drawing.Size(86, 111);
             this.SettingsButton.TabIndex = 4;
             this.SettingsButton.Text = "\r\n\r\nOptions";
             this.SettingsButton.UseVisualStyleBackColor = true;
@@ -215,9 +222,10 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label1.ForeColor = System.Drawing.Color.LightGray;
-            this.label1.Location = new System.Drawing.Point(201, 22);
+            this.label1.Location = new System.Drawing.Point(302, 33);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(20, 32);
+            this.label1.Size = new System.Drawing.Size(29, 48);
             this.label1.TabIndex = 3;
             this.label1.Text = "|";
             // 
@@ -227,9 +235,10 @@
             this.DownloadButton.FlatAppearance.BorderSize = 0;
             this.DownloadButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DownloadButton.Font = new System.Drawing.Font("Segoe MDL2 Assets", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.DownloadButton.Location = new System.Drawing.Point(138, 3);
+            this.DownloadButton.Location = new System.Drawing.Point(207, 4);
+            this.DownloadButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.DownloadButton.Name = "DownloadButton";
-            this.DownloadButton.Size = new System.Drawing.Size(57, 74);
+            this.DownloadButton.Size = new System.Drawing.Size(86, 111);
             this.DownloadButton.TabIndex = 2;
             this.DownloadButton.Text = "\r\n\r\nGet";
             this.DownloadButton.UseVisualStyleBackColor = true;
@@ -241,9 +250,10 @@
             this.SyncButton.FlatAppearance.BorderSize = 0;
             this.SyncButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SyncButton.Font = new System.Drawing.Font("Segoe MDL2 Assets", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.SyncButton.Location = new System.Drawing.Point(75, 3);
+            this.SyncButton.Location = new System.Drawing.Point(112, 4);
+            this.SyncButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.SyncButton.Name = "SyncButton";
-            this.SyncButton.Size = new System.Drawing.Size(57, 74);
+            this.SyncButton.Size = new System.Drawing.Size(86, 111);
             this.SyncButton.TabIndex = 1;
             this.SyncButton.Text = "\r\n\r\nSync";
             this.SyncButton.UseVisualStyleBackColor = true;
@@ -255,9 +265,10 @@
             this.AddButton.FlatAppearance.BorderSize = 0;
             this.AddButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AddButton.Font = new System.Drawing.Font("Segoe MDL2 Assets", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.AddButton.Location = new System.Drawing.Point(12, 3);
+            this.AddButton.Location = new System.Drawing.Point(18, 4);
+            this.AddButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.AddButton.Name = "AddButton";
-            this.AddButton.Size = new System.Drawing.Size(57, 74);
+            this.AddButton.Size = new System.Drawing.Size(86, 111);
             this.AddButton.TabIndex = 0;
             this.AddButton.Text = "\r\n\r\nAdd";
             this.AddButton.UseVisualStyleBackColor = true;
@@ -265,20 +276,20 @@
             // 
             // GameLibrary
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(1004, 511);
+            this.ClientSize = new System.Drawing.Size(1506, 766);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.statusStrip1);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2);
-            this.MinimumSize = new System.Drawing.Size(1018, 544);
+            this.MinimumSize = new System.Drawing.Size(1516, 788);
             this.Name = "GameLibrary";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Game Library";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GameLibrary_FormClosing);
             this.Load += new System.EventHandler(this.GameLibrary_Load);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
