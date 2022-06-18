@@ -679,7 +679,7 @@ namespace OpenSaveCloudClient.Core
             return null;
         }
 
-        public User? DeleteUser(long userId)
+        public bool DeleteUser(long userId)
         {
             logManager.AddInformation("Delete a user and all his datas");
             string uuidTask = taskManager.StartTask("Deleting user", true, 1);
@@ -692,7 +692,7 @@ namespace OpenSaveCloudClient.Core
                 {
                     string responseText = response.Content.ReadAsStringAsync().Result;
                     taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
-                    return JsonSerializer.Deserialize<User>(responseText);
+                    return true;
                 }
                 else
                 {
@@ -705,7 +705,7 @@ namespace OpenSaveCloudClient.Core
                 logManager.AddError(ex);
                 taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
-            return null;
+            return false;
         }
 
         public bool ChangePassword(NewPassword password)
