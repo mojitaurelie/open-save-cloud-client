@@ -34,12 +34,12 @@ namespace OpenSaveCloudClient
 
         private void DownloadGameForm_Load(object sender, EventArgs e)
         {
-            new Thread(() => {
+            ThreadPool.QueueUserWorkItem(delegate {
                 List<Game>? remoteGames = serverConnector.GetGamesInfo();
                 this.Invoke((MethodInvoker)delegate {
                     UpdateRemoteList(remoteGames);
                 });
-            }).Start();
+            });
         }
 
         private void UpdateRemoteList(List<Game>? remoteGames)

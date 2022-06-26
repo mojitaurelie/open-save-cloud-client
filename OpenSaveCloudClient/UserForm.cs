@@ -58,7 +58,7 @@ namespace OpenSaveCloudClient
                 LockControls(false);
                 return;
             }
-            new Thread(() =>
+            ThreadPool.QueueUserWorkItem(delegate
             {
                 serverConnector.ChangePassword(new NewPassword { Password = NewPasswordBox.Text, VerifyPassword = PasswordAgainBox.Text });
                 this.Invoke((MethodInvoker)delegate {
@@ -66,7 +66,7 @@ namespace OpenSaveCloudClient
                     PasswordAgainBox.Clear();
                     LockControls(false);
                 });
-            }).Start();
+            });
         }
 
         private void LockControls(bool l)

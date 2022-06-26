@@ -37,7 +37,7 @@ namespace OpenSaveCloudClient
                 LockControls(false);
                 return;
             }
-            new Thread(() =>
+            ThreadPool.QueueUserWorkItem(delegate
             {
                 try
                 {
@@ -88,7 +88,7 @@ namespace OpenSaveCloudClient
                         LockControls(false);
                     });
                 }
-            }).Start();
+            });
         }
 
         private void LockControls(bool value)

@@ -36,7 +36,7 @@ namespace OpenSaveCloudClient
 
         private void LoadUsers()
         {
-            new Thread(() =>
+            ThreadPool.QueueUserWorkItem(delegate
             {
                 List<User>? users = serverConnector.GetUsers();
                 if (users != null)
@@ -45,7 +45,7 @@ namespace OpenSaveCloudClient
                         UpdateRemoteList(users);
                     });
                 }
-            }).Start();
+            });
         }
 
         private void UpdateRemoteList(List<User> users)
@@ -107,7 +107,7 @@ namespace OpenSaveCloudClient
                     long userId = Convert.ToInt64(item.SubItems[1].Text);
                     ids.Add(userId);
                 }
-                new Thread(() =>
+                ThreadPool.QueueUserWorkItem(delegate
                 {
                     try
                     {
@@ -134,7 +134,7 @@ namespace OpenSaveCloudClient
                             LockControls(false);
                         });
                     }
-                }).Start();
+                });
             }
         }
 

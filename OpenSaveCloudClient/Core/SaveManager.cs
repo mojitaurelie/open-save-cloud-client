@@ -19,7 +19,7 @@ namespace OpenSaveCloudClient.Core
         {
             saves = new List<GameSave>();
             Load();
-            new Thread(() => CleanArchiveFolder()).Start();
+            ThreadPool.QueueUserWorkItem(delegate { CleanArchiveFolder(); });
         }
 
         public static SaveManager GetInstance()

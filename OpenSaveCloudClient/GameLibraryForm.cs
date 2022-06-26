@@ -37,7 +37,7 @@ namespace OpenSaveCloudClient
             taskManager.TaskChanged += taskManager_TaskChanged;
             logManager.Cleared += LogManager_LogCleared;
             logManager.NewMessage += LogManager_NewMessage;
-            new Thread(() =>
+            ThreadPool.QueueUserWorkItem(delegate
             {
                 this.Invoke((MethodInvoker)delegate {
                     CheckPaths();
@@ -75,7 +75,7 @@ namespace OpenSaveCloudClient
                         SetTaskFailed(taskUuid);
                     }
                 }
-            }).Start();
+            });
         }
 
         private void CheckPaths()
@@ -124,7 +124,7 @@ namespace OpenSaveCloudClient
                 Close();
             } else
             {
-                new Thread(() =>
+                ThreadPool.QueueUserWorkItem(delegate
                 {
                     string taskUuid = StartTask("Detecting changes...", true, 1);
                     try
@@ -137,7 +137,7 @@ namespace OpenSaveCloudClient
                         logManager.AddError(e);
                         SetTaskFailed(taskUuid);
                     }
-                }).Start();
+                });
                 SetAdminControls();
                 Enabled = true;
                 AboutButton.Enabled = true;
@@ -171,7 +171,7 @@ namespace OpenSaveCloudClient
             AddGameForm form = new(_client);
             if (form.ShowDialog() == DialogResult.OK) {
                 GameSave newGame = form.Result;
-                new Thread(() => AddGameToLibrary(newGame)).Start();
+                ThreadPool.QueueUserWorkItem(delegate { AddGameToLibrary(newGame); });
             }
         }
 
@@ -335,12 +335,12 @@ namespace OpenSaveCloudClient
         private void SyncButton_Click(object sender, EventArgs e)
         {
             LockCriticalControls(true);
-            new Thread(() => { 
+            ThreadPool.QueueUserWorkItem(delegate { 
                 serverConnector.Synchronize();
                 this.Invoke((MethodInvoker)delegate {
                     LockCriticalControls(false);
                 });
-            }).Start();
+            });
         }
 
         private void DownloadButton_Click(object sender, EventArgs e)
