@@ -58,6 +58,16 @@ namespace OpenSaveCloudClient
                 LockControls(false);
                 return;
             }
+            if (!PasswordTool.CheckRequirements(NewPasswordBox.Text))
+            {
+                MessageBox.Show(
+                        "Passwords need at least 6 characters",
+                        "Change password",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                LockControls(false);
+                return;
+            }
             ThreadPool.QueueUserWorkItem(delegate
             {
                 serverConnector.ChangePassword(new NewPassword { Password = NewPasswordBox.Text, VerifyPassword = PasswordAgainBox.Text });
@@ -84,6 +94,10 @@ namespace OpenSaveCloudClient
                 valid = false;
             }
             else if (NewPasswordBox.Text != PasswordAgainBox.Text)
+            {
+                valid = false;
+            }
+            else if (!PasswordTool.CheckRequirements(NewPasswordBox.Text))
             {
                 valid = false;
             }

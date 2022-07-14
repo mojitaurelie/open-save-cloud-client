@@ -158,5 +158,121 @@ namespace OpenSaveCloudClient
                 SavePasswordButton.Enabled = v;
             }
         }
+
+        private void NewPasswordBox_TextChanged(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count == 1) {
+                bool valid = true;
+                if (string.IsNullOrEmpty(NewPasswordBox.Text) || string.IsNullOrEmpty(PasswordAgainBox.Text))
+                {
+                    valid = false;
+                }
+                else if (NewPasswordBox.Text != PasswordAgainBox.Text)
+                {
+                    valid = false;
+                }
+                SavePasswordButton.Enabled = valid;
+            }
+            else
+            {
+                SavePasswordButton.Enabled = false;
+            }
+        }
+
+        private void SavePasswordButton_Click(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count != 1)
+            {
+                return;
+            }
+            LockControls(true);
+            if (string.IsNullOrEmpty(NewPasswordBox.Text) || string.IsNullOrEmpty(PasswordAgainBox.Text))
+            {
+                MessageBox.Show(
+                        "Password fields are empty",
+                        "Change password",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                LockControls(false);
+                return;
+            }
+            if (NewPasswordBox.Text != PasswordAgainBox.Text)
+            {
+                MessageBox.Show(
+                        "Passwords not matches",
+                        "Change password",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                LockControls(false);
+                return;
+            }
+            if (!PasswordTool.CheckRequirements(NewPasswordBox.Text))
+            {
+                MessageBox.Show(
+                        "Passwords need at least 6 characters",
+                        "Change password",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                LockControls(false);
+                return;
+            }
+            long userId = Convert.ToInt64(listView1.SelectedItems[0].SubItems[1].Text);
+            ThreadPool.QueueUserWorkItem(delegate
+            {
+                serverConnector.ChangePassword(userId, new NewPassword { Password = NewPasswordBox.Text, VerifyPassword = PasswordAgainBox.Text });
+                this.Invoke((MethodInvoker)delegate {
+                    NewPasswordBox.Clear();
+                    PasswordAgainBox.Clear();
+                    LockControls(false);
+                });
+            });
+        }
+
+        private void saveUsernameButton_Click(object sender, EventArgs e)
+        {
+            LockControls(true);
+            if (UsernameBox.Text.Length < 3)
+            {
+                MessageBox.Show(
+                        "Username need at least 3 characters",
+                        "Change username",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                LockControls(false);
+                return;
+            }
+            long userId = Convert.ToInt64(listView1.SelectedItems[0].SubItems[1].Text);
+            ThreadPool.QueueUserWorkItem(delegate
+            {
+                serverConnector.ChangeUsername(new UpdateUsername { Id = userId, Username = UsernameBox.Text });
+                this.Invoke((MethodInvoker)delegate {
+                    listView1.SelectedItems[0].SubItems[0].Text = UsernameBox.Text;
+                    LockControls(false);
+                });
+            });
+        }
+
+        private void UsernameBox_TextChanged(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count == 1)
+            {
+                string currentUsername = listView1.SelectedItems[0].SubItems[0].Text;
+                bool valid = true;
+                if (UsernameBox.Text.Length < 3)
+                {
+                    valid = false;
+                }
+                else if (UsernameBox.Text == currentUsername)
+                {
+                    valid = false;
+                }
+                saveUsernameButton.Enabled = valid;
+            }
+            else
+            {
+                saveUsernameButton.Enabled = false;
+            }
+            
+        }
     }
 }

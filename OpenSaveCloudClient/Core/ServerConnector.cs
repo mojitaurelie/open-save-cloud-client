@@ -203,7 +203,7 @@ namespace OpenSaveCloudClient.Core
                     return JsonSerializer.Deserialize<Game>(responseText);
                 } else
                 {
-                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                    LogServerError(response);
                 }
                 taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
@@ -365,7 +365,7 @@ namespace OpenSaveCloudClient.Core
                 }
                 else
                 {
-                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                    LogServerError(response);
                 }
                 taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
@@ -399,7 +399,7 @@ namespace OpenSaveCloudClient.Core
                 }
                 else
                 {
-                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                    LogServerError(response);
                 }
                 taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
@@ -449,7 +449,7 @@ namespace OpenSaveCloudClient.Core
                 }
                 else
                 {
-                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                    LogServerError(response);
                 }
                 taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
@@ -518,7 +518,7 @@ namespace OpenSaveCloudClient.Core
                 }
                 else
                 {
-                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                    LogServerError(response);
                     taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
                 }
             }
@@ -547,7 +547,7 @@ namespace OpenSaveCloudClient.Core
                 }
                 else
                 {
-                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                    LogServerError(response);
                 }
                 taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
@@ -576,7 +576,7 @@ namespace OpenSaveCloudClient.Core
                 }
                 else
                 {
-                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                    LogServerError(response);
                 }
                 taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
@@ -608,7 +608,7 @@ namespace OpenSaveCloudClient.Core
                 }
                 else
                 {
-                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                    LogServerError(response);
                 }
                 taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
@@ -637,7 +637,7 @@ namespace OpenSaveCloudClient.Core
                 }
                 else
                 {
-                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                    LogServerError(response);
                 }
                 taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
@@ -667,7 +667,7 @@ namespace OpenSaveCloudClient.Core
                 }
                 else
                 {
-                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                    LogServerError(response);
                 }
                 taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
@@ -696,7 +696,7 @@ namespace OpenSaveCloudClient.Core
                 }
                 else
                 {
-                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                    LogServerError(response);
                 }
                 taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
@@ -728,7 +728,7 @@ namespace OpenSaveCloudClient.Core
                 }
                 else
                 {
-                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                    LogServerError(response);
                 }
                 taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
@@ -740,7 +740,7 @@ namespace OpenSaveCloudClient.Core
             return false;
         }
 
-        public bool ChangePassword(int userId, NewPassword password)
+        public bool ChangePassword(long userId, NewPassword password)
         {
             logManager.AddInformation(string.Format("Changing password of user {0}", userId));
             string uuidTask = taskManager.StartTask("Changing password", true, 1);
@@ -760,7 +760,39 @@ namespace OpenSaveCloudClient.Core
                 }
                 else
                 {
-                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                    LogServerError(response);
+                }
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+            }
+            catch (Exception ex)
+            {
+                logManager.AddError(ex);
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+            }
+            return false;
+        }
+
+        public bool ChangeUsername(UpdateUsername newUserInfo)
+        {
+            logManager.AddInformation(string.Format("Changing username of user {0}", newUserInfo.Id));
+            string uuidTask = taskManager.StartTask("Changing username", true, 1);
+            try
+            {
+                HttpClient client = new();
+                string json = JsonSerializer.Serialize(newUserInfo);
+                HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = client.PostAsync(string.Format("{0}:{1}/api/v1/admin/user/username", host, port), content).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    logManager.AddInformation("Username changed");
+                    string responseText = response.Content.ReadAsStringAsync().Result;
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+                    return true;
+                }
+                else
+                {
+                    LogServerError(response);
                 }
                 taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
@@ -819,7 +851,7 @@ namespace OpenSaveCloudClient.Core
                 }
                 else
                 {
-                    logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+                    LogServerError(response);
                 }
                 taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
             }
@@ -894,6 +926,19 @@ namespace OpenSaveCloudClient.Core
                 logManager.AddError(ex);
             }
             taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+        }
+
+        private void LogServerError(HttpResponseMessage response)
+        {
+            string responseText = response.Content.ReadAsStringAsync().Result;
+            HttpError? error = JsonSerializer.Deserialize<HttpError>(responseText);
+            if (error != null)
+            {
+                logManager.AddError(String.Format("[Server error][{0}] {1}", error.Status, error.Message));
+            } else
+            {
+                logManager.AddError(String.Format("Received HTTP Status {0} from the server", response.StatusCode.ToString()));
+            }
         }
 
         /// <summary>

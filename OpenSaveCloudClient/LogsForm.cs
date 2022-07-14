@@ -33,7 +33,8 @@ namespace OpenSaveCloudClient
         {
             this.Invoke((MethodInvoker)delegate
             {
-                ListViewItem lvi = listView1.Items.Add(e.Message);
+                ListViewItem lvi = listView1.Items.Add(e.Timestamp.ToString());
+                lvi.SubItems.Add(e.Message);
                 lvi.SubItems.Add(e.Severity.ToString());
             });
         }
@@ -47,7 +48,8 @@ namespace OpenSaveCloudClient
         {
             foreach (Log l in logManager.Messages)
             {
-                ListViewItem lvi = listView1.Items.Add(l.Message);
+                ListViewItem lvi = listView1.Items.Add(l.Timestamp.ToString());
+                lvi.SubItems.Add(l.Message);
                 lvi.SubItems.Add(l.Severity.ToString());
             }
         }

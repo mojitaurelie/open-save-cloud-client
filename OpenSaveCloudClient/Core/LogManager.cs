@@ -35,12 +35,14 @@ namespace OpenSaveCloudClient.Core
         {
             Log log = new()
             {
+                Timestamp = DateTime.Now,
                 Message = message,
                 Severity = LogSeverity.Error,
             };
             messages.Add(log);
             NewMessageEventArgs args = new()
             {
+                Timestamp = DateTime.Now,
                 Message = message,
                 Severity = LogSeverity.Error,
             };
@@ -51,12 +53,14 @@ namespace OpenSaveCloudClient.Core
         {
             Log log = new()
             {
+                Timestamp = DateTime.Now,
                 Message = message,
                 Severity = LogSeverity.Information,
             };
             messages.Add(log);
             NewMessageEventArgs args = new()
             {
+                Timestamp = DateTime.Now,
                 Message = message,
                 Severity = LogSeverity.Information,
             };
@@ -67,12 +71,14 @@ namespace OpenSaveCloudClient.Core
         {
             Log log = new()
             {
+                Timestamp = DateTime.Now,
                 Message = message,
                 Severity = LogSeverity.Warning,
             };
             messages.Add(log);
             NewMessageEventArgs args = new()
             {
+                Timestamp = DateTime.Now,
                 Message = message,
                 Severity = LogSeverity.Warning,
             };
@@ -110,6 +116,7 @@ namespace OpenSaveCloudClient.Core
 
     public class NewMessageEventArgs : EventArgs
     {
+        public DateTime Timestamp { get; set; }
         public string Message { get; set; }
         public LogSeverity Severity { get; set; }
     }
