@@ -125,7 +125,11 @@ namespace OpenSaveCloudClient.Core
             mut.WaitOne();
             try
             {
-                _tasks.Clear();
+                var ended = _tasks.Where(t => t.Value.Status != AsyncTaskStatus.Running).ToArray();
+                foreach (var task in ended)
+                {
+                    _tasks.Remove(task.Key);
+                }
                 OnTaskCleared(new TaskClearedEventArgs());
             }
             finally
