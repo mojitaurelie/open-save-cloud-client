@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddGameForm));
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -42,7 +41,6 @@
             this.NoCoverLabel = new System.Windows.Forms.Label();
             this.CoverPicture = new System.Windows.Forms.PictureBox();
             this.AddButton = new System.Windows.Forms.Button();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.PathErrorLabel = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -201,11 +199,6 @@
             this.AddButton.UseVisualStyleBackColor = true;
             this.AddButton.Click += new System.EventHandler(this.button1_Click);
             // 
-            // timer1
-            // 
-            this.timer1.Interval = 350;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
             // PathErrorLabel
             // 
             this.PathErrorLabel.AutoSize = true;
@@ -259,7 +252,6 @@
         private Label label2;
         private Label NoCoverLabel;
         private PictureBox CoverPicture;
-        private System.Windows.Forms.Timer timer1;
         private Label NameWarningLabel;
         private Label PathErrorLabel;
     }

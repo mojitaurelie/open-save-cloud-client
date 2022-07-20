@@ -1,6 +1,4 @@
-﻿using IGDB;
-using IGDB.Models;
-using OpenSaveCloudClient.Core;
+﻿using OpenSaveCloudClient.Core;
 using OpenSaveCloudClient.Models;
 using System;
 using System.Collections.Generic;
@@ -16,72 +14,21 @@ namespace OpenSaveCloudClient
 {
     public partial class AddGameForm : Form
     {
-
-        private readonly IGDBClient? _client;
         private GameSave result;
         private SaveManager saveManager;
 
         public GameSave Result { get { return result; } }
 
-        public AddGameForm(IGDBClient? iGDBClient)
+        public AddGameForm()
         {
             InitializeComponent();
-            _client = iGDBClient;
             saveManager = SaveManager.GetInstance();
-            if (_client == null)
-            {
-                NoCoverLabel.Text = "IGDB is not configured";
-            }
-            else
-            {
-                NoCoverLabel.Visible = false;
-            }
-        }
-
-        private async void timer1_Tick(object sender, EventArgs e)
-        {
-            timer1.Stop();
-            if (_client != null)
-            {
-                NoCoverLabel.Visible = false;
-                CoverPicture.Visible = true;
-                if (!string.IsNullOrWhiteSpace(NameBox.Text))
-                {
-                    try
-                    {
-                        string query = string.Format("fields *; search \"{0}\";", NameBox.Text.Replace("\"", ""));
-                        Game[] games = await _client.QueryAsync<Game>(IGDBClient.Endpoints.Games, query: query);
-                        games = games.Where(g => g.Cover != null && g.Cover.Value != null).ToArray();
-                        if (games.Length > 0)
-                        {
-                            Game game = games.First();
-                            CoverPicture.LoadAsync(game.Cover.Value.Url);
-                        }
-                        else
-                        {
-                            CoverPicture.Visible = false;
-                            NoCoverLabel.Text = "No cover found";
-                            NoCoverLabel.Visible = true;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        CoverPicture.Visible = false;
-                        NoCoverLabel.Text = ex.Message;
-                        NoCoverLabel.Visible = true;
-                    }
-                }
-            }
+            NoCoverLabel.Text = "IGDB is not configured";
         }
 
         private void NameBox_TextChanged(object sender, EventArgs e)
         {
             NameWarningLabel.Visible = saveManager.Saves.Exists(g => g.Name == NameBox.Text);
-            if (_client != null)
-            {
-                timer1.Stop();
-                timer1.Start();
-            }
         }
 
         private void pathButton_Click(object sender, EventArgs e)

@@ -1,6 +1,5 @@
 ﻿using OpenSaveCloudClient.Models;
 using OpenSaveCloudClient.Core;
-using IGDB;
 using OpenSaveCloudClient.Models.Remote;
 
 namespace OpenSaveCloudClient
@@ -9,7 +8,6 @@ namespace OpenSaveCloudClient
     {
 
         private readonly Configuration _configuration;
-        //private readonly IGDBClient? _client;
         private readonly SaveManager saveManager;
         private readonly TaskManager taskManager;
         private readonly ServerConnector serverConnector;
@@ -28,12 +26,6 @@ namespace OpenSaveCloudClient
             listViewContextMenu = new ContextMenuStrip();
             listViewContextMenu.Items.Add("Delete from server").Click += contextMenuDeleteFromServer_Click;
             listViewContextMenu.Items.Add("Remove from local library").Click += contextMenuRemoveFromLocalLibrary_Click;
-            /*if (_configuration.GetBoolean("igdb.enabled", false))
-            {
-                string clientId = _configuration.GetString("igdb.client_id", "");
-                string clientSecret = _configuration.GetString("igdb.client_secret", "");
-                _client = new IGDBClient(clientId, clientSecret);
-            }*/
         }
 
         private void GameLibrary_Load(object sender, EventArgs e)
@@ -172,7 +164,7 @@ namespace OpenSaveCloudClient
 
         private void AddButton_Click(object sender, EventArgs e)
         {
-            AddGameForm form = new(/*_client*/ null);
+            AddGameForm form = new();
             if (form.ShowDialog() == DialogResult.OK) {
                 GameSave newGame = form.Result;
                 ThreadPool.QueueUserWorkItem(delegate { AddGameToLibrary(newGame); });
