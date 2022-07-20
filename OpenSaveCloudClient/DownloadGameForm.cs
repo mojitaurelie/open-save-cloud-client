@@ -94,12 +94,15 @@ namespace OpenSaveCloudClient
                     pathButton.Enabled = true;
                     LocationBox.Enabled = true;
                     LocationBox.Text = selectedItem.SubItems[2].Text;
+                    infoPathLabel.Text = String.Format("A '{0}' folder will be created", selectedItem.SubItems[0].Text);
+                    infoPathLabel.Visible = true;
                 }
                 
             } else
             {
                 pathButton.Enabled = false;
                 LocationBox.Enabled = false;
+                infoPathLabel.Visible = false;
                 LocationBox.Clear();
             }
         }
@@ -122,7 +125,7 @@ namespace OpenSaveCloudClient
         {
             foreach (ListViewItem lvi in RemoteList.CheckedItems)
             {
-                string path = lvi.SubItems[2].Text;
+                string path = Path.Join(lvi.SubItems[2].Text, lvi.SubItems[0].Text);
                 if (string.IsNullOrWhiteSpace(path))
                 {
                     MessageBox.Show("File folder cannot be empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

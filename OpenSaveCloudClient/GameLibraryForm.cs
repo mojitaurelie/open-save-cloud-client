@@ -9,12 +9,12 @@ namespace OpenSaveCloudClient
     {
 
         private readonly Configuration _configuration;
-        private readonly IGDBClient? _client;
+        //private readonly IGDBClient? _client;
         private readonly SaveManager saveManager;
         private readonly TaskManager taskManager;
         private readonly ServerConnector serverConnector;
         private readonly LogManager logManager;
-
+        private readonly ContextMenuStrip listViewContextMenu;
 
         public GameLibrary()
         {
@@ -24,6 +24,10 @@ namespace OpenSaveCloudClient
             serverConnector = ServerConnector.GetInstance();
             _configuration = Configuration.GetInstance();
             logManager = LogManager.GetInstance();
+
+            listViewContextMenu = new ContextMenuStrip();
+            listViewContextMenu.Items.Add("Delete from server").Click += contextMenuDeleteFromServer_Click;
+            listViewContextMenu.Items.Add("Remove from local library").Click += contextMenuRemoveFromLocalLibrary_Click;
             /*if (_configuration.GetBoolean("igdb.enabled", false))
             {
                 string clientId = _configuration.GetString("igdb.client_id", "");
@@ -168,7 +172,7 @@ namespace OpenSaveCloudClient
 
         private void AddButton_Click(object sender, EventArgs e)
         {
-            AddGameForm form = new(_client);
+            AddGameForm form = new(/*_client*/ null);
             if (form.ShowDialog() == DialogResult.OK) {
                 GameSave newGame = form.Result;
                 ThreadPool.QueueUserWorkItem(delegate { AddGameToLibrary(newGame); });
@@ -465,6 +469,70 @@ namespace OpenSaveCloudClient
                 WaitingForm form = new();
                 form.ShowDialog();
                 taskManager.TaskChanged -= taskManager_TaskChanged;
+            }
+        }
+
+        private void listView1_Click(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                if (listView1.SelectedItems.Count == 1 && SyncButton.Enabled)
+                {
+                    GameSave? g = saveManager.Saves.FirstOrDefault(g => g.Uuid == listView1.SelectedItems[0].SubItems[1].Text);
+                    if (g != null)
+                    {
+                        listViewContextMenu.Items[0].Enabled = g.Hash.Length > 0;
+                        listViewContextMenu.Show(listView1, e.Location);
+                    }
+                }
+            }
+        }
+
+        private void contextMenuDeleteFromServer_Click(object? sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count == 1 && SyncButton.Enabled)
+            {
+                GameSave? g = saveManager.Saves.FirstOrDefault(g => g.Uuid == listView1.SelectedItems[0].SubItems[1].Text);
+                if (g != null)
+                {
+                    DialogResult res = MessageBox.Show(String.Format("Do you really want to remove '{0}' from the server?", g.Name) +
+                        " It will not be deleted from the hard drive", "Delete synced save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (res == DialogResult.Yes)
+                    {
+                        LockCriticalControls(true);
+                        ThreadPool.QueueUserWorkItem(delegate {
+                            if (serverConnector.DeleteGame(g.Id))
+                            {
+                                saveManager.Saves.Remove(g);
+                                saveManager.Save();
+                            }
+                            this.Invoke((MethodInvoker)delegate {
+                                RefreshList();
+                                LockCriticalControls(false);
+                            });
+                        });
+                    }
+                    
+                }
+            }
+        }
+
+        private void contextMenuRemoveFromLocalLibrary_Click(object? sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count == 1 && SyncButton.Enabled)
+            {
+                GameSave? g = saveManager.Saves.FirstOrDefault(g => g.Uuid == listView1.SelectedItems[0].SubItems[1].Text);
+                if (g != null)
+                {
+                    DialogResult res = MessageBox.Show(String.Format("Do you really want to remove '{0}' from the library?", g.Name) +
+                        " It will not be deleted from the hard drive or the server", "Remove game from local library", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (res == DialogResult.Yes)
+                    {
+                        saveManager.Saves.Remove(g);
+                        saveManager.Save();
+                        RefreshList();
+                    }
+                }
             }
         }
     }

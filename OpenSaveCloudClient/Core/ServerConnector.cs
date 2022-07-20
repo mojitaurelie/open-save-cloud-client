@@ -708,6 +708,35 @@ namespace OpenSaveCloudClient.Core
             return false;
         }
 
+        public bool DeleteGame(long gameId)
+        {
+            logManager.AddInformation("Delete a game from the server");
+            string uuidTask = taskManager.StartTask("Deleting game", true, 1);
+            try
+            {
+                using HttpClient client = new();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = client.DeleteAsync(string.Format("{0}:{1}/api/v1/game/remove/{2}", host, port, gameId)).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseText = response.Content.ReadAsStringAsync().Result;
+                    taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Ended);
+                    return true;
+                }
+                else
+                {
+                    LogServerError(response);
+                }
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+            }
+            catch (Exception ex)
+            {
+                logManager.AddError(ex);
+                taskManager.UpdateTaskStatus(uuidTask, AsyncTaskStatus.Failed);
+            }
+            return false;
+        }
+
         public bool ChangePassword(NewPassword password)
         {
             logManager.AddInformation("Changing password");

@@ -38,6 +38,7 @@
             this.DownloadButton = new System.Windows.Forms.Button();
             this.RemoteList = new System.Windows.Forms.ListView();
             this.GameName = new System.Windows.Forms.ColumnHeader();
+            this.infoPathLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.LoadingIndicator)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -59,7 +60,7 @@
             this.LoadingIndicator.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.LoadingIndicator.Image = ((System.Drawing.Image)(resources.GetObject("LoadingIndicator.Image")));
             this.LoadingIndicator.Location = new System.Drawing.Point(599, 5);
-            this.LoadingIndicator.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.LoadingIndicator.Margin = new System.Windows.Forms.Padding(2);
             this.LoadingIndicator.Name = "LoadingIndicator";
             this.LoadingIndicator.Size = new System.Drawing.Size(34, 39);
             this.LoadingIndicator.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -71,13 +72,14 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.infoPathLabel);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.pathButton);
             this.groupBox1.Controls.Add(this.LocationBox);
             this.groupBox1.Location = new System.Drawing.Point(277, 50);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
             this.groupBox1.Size = new System.Drawing.Size(354, 310);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
@@ -98,7 +100,7 @@
             this.pathButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pathButton.Enabled = false;
             this.pathButton.Location = new System.Drawing.Point(317, 61);
-            this.pathButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pathButton.Margin = new System.Windows.Forms.Padding(2);
             this.pathButton.Name = "pathButton";
             this.pathButton.Size = new System.Drawing.Size(33, 24);
             this.pathButton.TabIndex = 6;
@@ -112,7 +114,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.LocationBox.Enabled = false;
             this.LocationBox.Location = new System.Drawing.Point(4, 62);
-            this.LocationBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.LocationBox.Margin = new System.Windows.Forms.Padding(2);
             this.LocationBox.Name = "LocationBox";
             this.LocationBox.Size = new System.Drawing.Size(310, 23);
             this.LocationBox.TabIndex = 5;
@@ -123,7 +125,7 @@
             this.DownloadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.DownloadButton.Enabled = false;
             this.DownloadButton.Location = new System.Drawing.Point(556, 367);
-            this.DownloadButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.DownloadButton.Margin = new System.Windows.Forms.Padding(2);
             this.DownloadButton.Name = "DownloadButton";
             this.DownloadButton.Size = new System.Drawing.Size(75, 23);
             this.DownloadButton.TabIndex = 9;
@@ -139,7 +141,7 @@
             this.RemoteList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.GameName});
             this.RemoteList.Location = new System.Drawing.Point(8, 50);
-            this.RemoteList.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.RemoteList.Margin = new System.Windows.Forms.Padding(2);
             this.RemoteList.Name = "RemoteList";
             this.RemoteList.Size = new System.Drawing.Size(266, 311);
             this.RemoteList.TabIndex = 10;
@@ -153,6 +155,18 @@
             this.GameName.Text = "Game name";
             this.GameName.Width = 240;
             // 
+            // infoPathLabel
+            // 
+            this.infoPathLabel.AutoSize = true;
+            this.infoPathLabel.Enabled = false;
+            this.infoPathLabel.Location = new System.Drawing.Point(4, 87);
+            this.infoPathLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.infoPathLabel.Name = "infoPathLabel";
+            this.infoPathLabel.Size = new System.Drawing.Size(153, 15);
+            this.infoPathLabel.TabIndex = 8;
+            this.infoPathLabel.Text = "A \'\' folder will be created in ";
+            this.infoPathLabel.Visible = false;
+            // 
             // DownloadGameForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -165,7 +179,7 @@
             this.Controls.Add(this.LoadingIndicator);
             this.Controls.Add(this.label1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MinimumSize = new System.Drawing.Size(660, 440);
             this.Name = "DownloadGameForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -190,5 +204,6 @@
         private Label label3;
         private Button pathButton;
         private TextBox LocationBox;
+        private Label infoPathLabel;
     }
 }
